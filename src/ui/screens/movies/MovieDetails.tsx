@@ -70,13 +70,13 @@ const MovieDetailScreen = ({route}) => {
                 }
               />
             </View>
-            <ScrollView horizontal style={styles.genres}>
+            <View style={styles.genres}>
               {movie?.genres.map(item => (
                 <View style={{marginRight: 8}} key={item}>
                   <Chip label={item} />
                 </View>
               ))}
-            </ScrollView>
+            </View>
             <View style={styles.actionContainer}>
               <RatingTile
                 rating={movie?.rating}
@@ -179,9 +179,12 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   genres: {
-    marginTop: 12,
+    flex: 1,
+    marginTop: 8,
+    gap: 8,
+    flexWrap: 'wrap',
     flexDirection: 'row',
-    alignSelf: 'flex-start',
+    alignContent: 'flex-start',
     marginBottom: 16,
   },
   scrollContent: {

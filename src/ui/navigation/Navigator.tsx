@@ -8,14 +8,33 @@ import I18n from '../../assets/localization/i18n';
 import MovieDetailScreen from '../screens/movies/MovieDetails';
 import {SearchScreen} from '../screens/search/SearchScreen';
 import LoginScreen from '../screens/login/LoginScreen';
-import {ProfileScreen} from '../screens/profile/Profile';
+import {ProfileScreen} from '../screens/profile/ProfileScreen';
+import {FavoritesScreen} from '../screens/favorites/FavoritesScreen';
+import {EditProfileScreen} from '../screens/profile/EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
+const ProfileStack = createNativeStackNavigator();
+const ProfileStackNav = () => {
+  return (
+    <ProfileStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: COLORS.BG,
+        },
+      }}>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+      <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
+      <ProfileStack.Screen name="Favorites" component={FavoritesScreen} />
+    </ProfileStack.Navigator>
+  );
+};
 
 const TabNavigator = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
+      sceneContainerStyle={{backgroundColor: COLORS.BG}}
       screenOptions={{
         tabBarActiveTintColor: COLORS.PRIMARY,
         headerShown: false,
@@ -49,8 +68,8 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="ProfileStack"
+        component={ProfileStackNav}
         options={{
           tabBarLabel: I18n.t('tabs.profile'),
           tabBarIcon: ({color, size}) => (
@@ -66,7 +85,13 @@ const Tab = createBottomTabNavigator();
 
 export const Navigator = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: COLORS.BG,
+        },
+      }}>
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Home" component={TabNavigator} />
       <Stack.Screen name="MovieDetails" component={MovieDetailScreen} />

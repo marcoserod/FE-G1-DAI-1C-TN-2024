@@ -18,14 +18,6 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground
-        source={IMAGES.OTHERS.LOGIN_BG}
-        style={styles.backgroundImage}>
-        <LinearGradient
-          colors={['transparent', '#1C1C1C']}
-          style={styles.gradientOverlay}
-        />
-      </ImageBackground>
       <View style={styles.contentContainer}>
         <View style={styles.logoContainer}>
           <Image source={IMAGES.OTHERS.LOGO_NAME} style={styles.logo} />
@@ -37,6 +29,14 @@ const LoginScreen = () => {
           <Text style={styles.loginButtonText}>{I18n.t('google.SSO')}</Text>
         </TouchableOpacity>
       </View>
+      <ImageBackground
+        source={IMAGES.OTHERS.LOGIN_BG}
+        style={styles.backgroundImage}>
+        <LinearGradient
+          colors={['transparent', '#1C1C1C']}
+          style={styles.gradientOverlay}
+        />
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -48,19 +48,21 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     resizeMode: 'contain',
-    flex: 1.5,
+    height: '75%',
   },
   gradientOverlay: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
-    height: '100%',
+    height: '75%',
   },
   contentContainer: {
-    flex: 1,
-    justifyContent: 'space-between',
-    marginVertical: 'auto',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+    top: '-20%',
   },
   logoContainer: {
     alignItems: 'center',
@@ -77,7 +79,6 @@ const styles = StyleSheet.create({
     columnGap: 12,
     backgroundColor: '#8D0000', // Google's red color
     marginHorizontal: 32,
-    marginBottom: 132,
     paddingVertical: 15,
     borderRadius: 16,
     justifyContent: 'center',

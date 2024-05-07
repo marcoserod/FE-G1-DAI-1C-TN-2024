@@ -6,8 +6,8 @@ interface Props {
   onPress: () => void;
   label: string;
   Icon?: any;
-  disabled: boolean;
-  type: 'filled' | 'text';
+  disabled?: boolean;
+  type?: 'filled' | 'text';
 }
 interface StyleProps {
   pressed: boolean;
@@ -17,8 +17,8 @@ export const Button = ({
   onPress = () => {
     console.log('pressed');
   },
-  type,
-  label,
+  type = 'filled',
+  label = '',
   Icon,
   disabled,
 }: Props) => {
