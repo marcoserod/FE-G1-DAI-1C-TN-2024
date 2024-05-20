@@ -1,4 +1,4 @@
-package com.movieplay
+package com.group1.movieplay
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -14,6 +14,12 @@ export default {
   movie: {
     cast: 'Reparto Principal',
   },
+  filters: {
+    timeGroup: 'Tiempo',
+    moreRecent: 'Más recientes',
+    lessRecent: 'Menos recientes',
+    ratingGroup: 'Calificación',
+  },
   search: {
     searchPlaceholder: 'Buscá por película o actor',
   },

@@ -8,6 +8,7 @@ interface Props {
   Icon?: any;
   disabled?: boolean;
   type?: 'filled' | 'text';
+  color?: string;
 }
 interface StyleProps {
   pressed: boolean;
@@ -21,6 +22,7 @@ export const Button = ({
   label = '',
   Icon,
   disabled,
+  color,
 }: Props) => {
   const getButtonStyle = ({pressed}: StyleProps) => {
     if (type === 'filled') {
@@ -36,7 +38,7 @@ export const Button = ({
   };
   const getLabelStyle = () => ({
     ...styles.text,
-    color: disabled ? COLORS.TEXT_DISABLED : COLORS.TEXT,
+    color: disabled ? COLORS.TEXT_DISABLED : color ? color : COLORS.TEXT,
   });
 
   return (

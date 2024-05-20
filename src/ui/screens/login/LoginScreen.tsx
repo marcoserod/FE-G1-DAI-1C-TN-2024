@@ -13,18 +13,37 @@ import IMAGES from '../../../assets/images';
 import {useNavigation} from '@react-navigation/native';
 
 import I18n from '../../../assets/localization/i18n';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+  webClientId:
+    '447584243631-9759tnuaprtc9f09rvvnphsi2dvqkvtj.apps.googleusercontent.com',
+  scopes: ['profile', 'email'],
+});
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo.idToken);
+      navigation.navigate('Home');
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         <View style={styles.logoContainer}>
           <Image source={IMAGES.OTHERS.LOGO_NAME} style={styles.logo} />
         </View>
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.loginButton} onPress={signIn}>
           <IMAGES.SVG.GOOGLE width={24} height={24} />
           <Text style={styles.loginButtonText}>{I18n.t('google.SSO')}</Text>
         </TouchableOpacity>

@@ -75,9 +75,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.movieplay"
+    namespace "com.group1.movieplay"
     defaultConfig {
-        applicationId "com.movieplay"
+        applicationId "com.group1.movieplay"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
