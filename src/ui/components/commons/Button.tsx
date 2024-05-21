@@ -9,7 +9,7 @@ interface Props {
   disabled?: boolean;
   type?: 'filled' | 'text';
   color?: string;
-  style: any;
+  style?: any;
 }
 interface StyleProps {
   pressed: boolean;
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 24,
     alignSelf: 'flex-start',
-    marginHorizontal: 'auto',
   },
   contentContainer: {
     flexDirection: 'row',

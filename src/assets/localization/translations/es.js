@@ -1,5 +1,9 @@
 export default {
   appName: 'MoviePlay',
+  commons: {
+    confirm: 'Confirmar',
+    cancel: 'Cancelar',
+  },
   google: {
     SSO: 'Continuar con Google',
   },
@@ -35,5 +39,12 @@ export default {
   },
   favorites: {
     yours: 'Tus favoritos',
+  },
+  logout: {
+    message: '¿Desea cerrar la sesión?',
+  },
+  delete: {
+    message: '¿Desea Eliminar la cuenta?',
+    subMessage: 'Esta acción no es reversible',
   },
 };

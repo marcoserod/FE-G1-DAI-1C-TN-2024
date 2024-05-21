@@ -1,27 +1,18 @@
-import {
-  View,
-  Modal,
-  StyleSheet,
-  Pressable,
-  PermissionsAndroid,
-} from 'react-native';
+import {View, StyleSheet, PermissionsAndroid} from 'react-native';
 import React from 'react';
 import {Button} from '../commons/Button';
 import I18n from '../../../assets/localization/i18n';
 import {COLORS} from '../../../constants/colors';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {ModalProps, ModalWrapper} from '../commons/modal/ModalWrapper';
 
-interface Props {
-  visible: boolean;
-  onClose: () => void;
-}
 type ImageType = {
   uri: string;
   type: string;
   name: string;
 };
 
-export const ChangePhotoModal = ({visible = true, onClose}: Props) => {
+export const ChangePhotoModal = ({isVisible, onClose}: ModalProps) => {
   const options = {
     mediaType: 'photo',
   };
@@ -47,24 +38,22 @@ export const ChangePhotoModal = ({visible = true, onClose}: Props) => {
   };
 
   return (
-    <Modal visible={visible} transparent>
-      <Pressable style={styles.modalContainer} onPress={onClose}>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={handleTakePhoto}
-            style={styles.buttonStyle}
-            type="text"
-            label={I18n.t('profile.takePhoto')?.toUpperCase()}
-          />
-          <Button
-            onPress={handleChoosePhoto}
-            style={{...styles.buttonStyle, paddingTop: 0}}
-            type="text"
-            label={I18n.t('profile.chooseExisting')?.toUpperCase()}
-          />
-        </View>
-      </Pressable>
-    </Modal>
+    <ModalWrapper isVisible={isVisible} onClose={onClose}>
+      <View style={styles.buttonContainer}>
+        <Button
+          onPress={handleTakePhoto}
+          style={styles.buttonStyle}
+          type="text"
+          label={I18n.t('profile.takePhoto')?.toUpperCase()}
+        />
+        <Button
+          onPress={handleChoosePhoto}
+          style={{...styles.buttonStyle, paddingTop: 0}}
+          type="text"
+          label={I18n.t('profile.chooseExisting')?.toUpperCase()}
+        />
+      </View>
+    </ModalWrapper>
   );
 };
 

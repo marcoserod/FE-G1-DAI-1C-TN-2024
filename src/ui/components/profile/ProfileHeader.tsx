@@ -1,17 +1,10 @@
-import {
-  View,
-  Text,
-  Pressable,
-  Image,
-  StyleSheet,
-  PermissionsAndroid,
-} from 'react-native';
+import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../constants/colors';
-import {launchCamera} from 'react-native-image-picker';
+
 import {ChangePhotoModal} from './ChangePhotoModal';
 
 interface User {
@@ -74,7 +67,7 @@ export const ProfileHeader = ({
         ) : null}
       </View>
       <ChangePhotoModal
-        visible={isModalVisible}
+        isVisible={isModalVisible}
         onClose={handleModalVisibility}
       />
     </LinearGradient>
