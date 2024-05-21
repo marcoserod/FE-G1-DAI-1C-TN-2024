@@ -30,6 +30,8 @@ export default {
     session: 'Sesión',
     logout: 'Cerrar sesión',
     delete: 'Eliminar cuenta',
+    takePhoto: 'Tomar foto',
+    chooseExisting: 'Elegir existente',
   },
   favorites: {
     yours: 'Tus favoritos',

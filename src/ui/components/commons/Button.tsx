@@ -9,6 +9,7 @@ interface Props {
   disabled?: boolean;
   type?: 'filled' | 'text';
   color?: string;
+  style: any;
 }
 interface StyleProps {
   pressed: boolean;
@@ -23,6 +24,7 @@ export const Button = ({
   Icon,
   disabled,
   color,
+  style,
 }: Props) => {
   const getButtonStyle = ({pressed}: StyleProps) => {
     if (type === 'filled') {
@@ -42,7 +44,10 @@ export const Button = ({
   });
 
   return (
-    <Pressable style={getButtonStyle} onPress={onPress} disabled={disabled}>
+    <Pressable
+      style={style ? [getButtonStyle, style] : getButtonStyle}
+      onPress={onPress}
+      disabled={disabled}>
       <View style={styles.contentContainer}>
         {Icon ? (
           <View style={styles.iconContainer}>

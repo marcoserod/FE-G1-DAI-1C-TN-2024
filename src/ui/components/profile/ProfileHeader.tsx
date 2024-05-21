@@ -1,9 +1,18 @@
-import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  StyleSheet,
+  PermissionsAndroid,
+} from 'react-native';
+import React, {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../constants/colors';
+import {launchCamera} from 'react-native-image-picker';
+import {ChangePhotoModal} from './ChangePhotoModal';
 
 interface User {
   name: string;
@@ -22,6 +31,12 @@ export const ProfileHeader = ({
   isEdit = false,
 }: Props) => {
   const navigation = useNavigation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleModalVisibility = () => {
+    setIsModalVisible(prev => !prev);
+  };
+
   return (
     <LinearGradient colors={['#DC682E', '#762419']} style={styles.gradient}>
       <View style={styles.header}>
@@ -48,7 +63,7 @@ export const ProfileHeader = ({
         />
         {isEdit ? (
           <Pressable
-            onPress={() => navigation.goBack()}
+            onPress={handleModalVisibility}
             style={styles.cameraButton}>
             <MaterialCommunityIcons
               name="camera-outline"
@@ -58,6 +73,10 @@ export const ProfileHeader = ({
           </Pressable>
         ) : null}
       </View>
+      <ChangePhotoModal
+        visible={isModalVisible}
+        onClose={handleModalVisibility}
+      />
     </LinearGradient>
   );
 };
