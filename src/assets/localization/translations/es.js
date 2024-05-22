@@ -3,6 +3,7 @@ export default {
   commons: {
     confirm: 'Confirmar',
     cancel: 'Cancelar',
+    retry: 'Re-intentar',
   },
   google: {
     SSO: 'Continuar con Google',

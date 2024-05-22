@@ -29,9 +29,9 @@ const LoginScreen = () => {
 
   const signIn = async () => {
     try {
-      await GoogleSignin.hasPlayServices();
+      /* await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo.idToken);
+      console.log(userInfo.idToken); */
       navigation.navigate('Home');
     } catch (error) {
       console.log(error);
