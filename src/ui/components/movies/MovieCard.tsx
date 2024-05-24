@@ -1,6 +1,5 @@
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import React from 'react';
-import IMAGES from '../../../assets/images';
 import {COLORS} from '../../../constants/colors';
 import {Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -12,7 +11,6 @@ interface Props {
   title: string;
   poster: string;
   rating: number;
-  key: number;
   id: number;
 }
 

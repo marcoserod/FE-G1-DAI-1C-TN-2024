@@ -6,6 +6,11 @@ import {COLORS} from '../../../constants/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import {ConfirmModal, useConfirmModal} from '../commons/ConfirmModal';
+import {useDispatch, useSelector} from 'react-redux';
+import {useLogoutMutation} from '../../../services/auth';
+import {LoadingModal} from '../commons/modal/LoadingModal';
+import {logOut} from '../../../store/authSlice';
+import {showErrorToast, showSuccessToast} from '../commons/CustomToast';
 
 const handlePressableStyle = ({pressed}) => [
   {
@@ -24,9 +29,27 @@ export const ProfileContent = () => {
   const navigation = useNavigation();
   const {isConfirmVisible, handleModalVisibility} = useConfirmModal();
   const [confirmModalData, setConfirmModalData] = useState(logoutModalData);
+  const refreshToken = useSelector(state => state?.userSession?.refreshToken);
+  const [logoutMutation, {isLoading: isLoggingOut}] = useLogoutMutation();
+  const dispatch = useDispatch();
 
+  const handleLogout = async () => {
+    try {
+      await logoutMutation(refreshToken);
+      dispatch(logOut());
+      showSuccessToast({message: I18n.t('profile.logoutSuccess')});
+    } catch (error) {
+      showErrorToast({
+        message: I18n.t('profile.logoutError'),
+        onRetry: handleLogout,
+      });
+    }
+  };
   const handleOnLogout = () => {
-    setConfirmModalData(logoutModalData);
+    setConfirmModalData({
+      ...logoutModalData,
+      onConfirm: handleLogout,
+    });
     handleModalVisibility();
   };
 
@@ -40,8 +63,10 @@ export const ProfileContent = () => {
     });
     handleModalVisibility();
   };
+
   return (
     <View style={styles.container}>
+      <LoadingModal isVisible={isLoggingOut} />
       <ConfirmModal
         onConfirm={confirmModalData.onConfirm}
         message={confirmModalData.modalMessage}

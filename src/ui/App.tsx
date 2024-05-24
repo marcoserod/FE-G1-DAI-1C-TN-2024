@@ -8,6 +8,8 @@ import {Navigator} from './navigation/Navigator';
 
 import Toast from 'react-native-toast-message';
 import {toastConfig} from './components/commons/CustomToast';
+import {Provider as ReduxProvider} from 'react-redux';
+import {store} from '../store/reduxStore';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -17,11 +19,13 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <NavigationContainer>
-        <StatusBar translucent backgroundColor="transparent" />
-        <Navigator />
-      </NavigationContainer>
-      <Toast config={toastConfig} />
+      <ReduxProvider store={store}>
+        <NavigationContainer>
+          <StatusBar translucent backgroundColor="transparent" />
+          <Navigator />
+        </NavigationContainer>
+        <Toast config={toastConfig} />
+      </ReduxProvider>
     </>
   );
 }

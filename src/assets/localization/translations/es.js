@@ -4,6 +4,8 @@ export default {
     confirm: 'Confirmar',
     cancel: 'Cancelar',
     retry: 'Re-intentar',
+    error: 'Error',
+    success: 'Éxito',
   },
   google: {
     SSO: 'Continuar con Google',
@@ -37,6 +39,8 @@ export default {
     delete: 'Eliminar cuenta',
     takePhoto: 'Tomar foto',
     chooseExisting: 'Elegir existente',
+    logoutSuccess: 'Se cerró la sesión',
+    logoutError: 'No pudimos cerrar la sesión',
   },
   favorites: {
     yours: 'Tus favoritos',

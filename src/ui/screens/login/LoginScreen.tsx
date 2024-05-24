@@ -10,35 +10,44 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import IMAGES from '../../../assets/images';
-import {useNavigation} from '@react-navigation/native';
 
 import I18n from '../../../assets/localization/i18n';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useLoginMutation} from '../../../services/auth';
+import {useDispatch} from 'react-redux';
+import {setCredentials} from '../../../store/authSlice';
+import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 GoogleSignin.configure({
-  webClientId:
-    '447584243631-9759tnuaprtc9f09rvvnphsi2dvqkvtj.apps.googleusercontent.com',
+  webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
   scopes: ['profile', 'email'],
 });
 
 const LoginScreen = () => {
-  const navigation = useNavigation();
+  const [login, {isLoading}] = useLoginMutation();
+  const dispatch = useDispatch();
 
   const signIn = async () => {
     try {
-      /* await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo.idToken); */
-      navigation.navigate('Home');
+      await GoogleSignin.hasPlayServices();
+      const {idToken} = await GoogleSignin.signIn();
+      const {userId, moviePlayToken, refreshToken} = await login(
+        idToken,
+      ).unwrap();
+      dispatch(
+        setCredentials({
+          userId,
+          moviePlayToken,
+          refreshToken,
+        }),
+      );
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <SafeAreaView style={styles.container}>
+      <LoadingModal isVisible={isLoading} />
       <View style={styles.contentContainer}>
         <View style={styles.logoContainer}>
           <Image source={IMAGES.OTHERS.LOGO_NAME} style={styles.logo} />
@@ -96,7 +105,7 @@ const styles = StyleSheet.create({
   loginButton: {
     flexDirection: 'row',
     columnGap: 12,
-    backgroundColor: '#8D0000', // Google's red color
+    backgroundColor: '#8D0000',
     marginHorizontal: 32,
     paddingVertical: 15,
     borderRadius: 16,

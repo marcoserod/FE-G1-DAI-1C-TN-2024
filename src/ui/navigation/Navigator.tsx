@@ -11,6 +11,8 @@ import LoginScreen from '../screens/login/LoginScreen';
 import {ProfileScreen} from '../screens/profile/ProfileScreen';
 import {FavoritesScreen} from '../screens/favorites/FavoritesScreen';
 import {EditProfileScreen} from '../screens/profile/EditProfileScreen';
+import {useSelector} from 'react-redux';
+import {useQueryInitializer} from '../../hooks/useQueryInitializer';
 
 const Stack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -84,6 +86,11 @@ const TabNavigator = () => {
 const Tab = createBottomTabNavigator();
 
 export const Navigator = () => {
+  useQueryInitializer();
+  const isLoggedIn = useSelector(state => state?.userSession?.isLogged);
+  const userSession = useSelector(state => state?.userSession);
+  console.log(userSession);
+  console.log('User is logged?', isLoggedIn);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -92,9 +99,16 @@ export const Navigator = () => {
           backgroundColor: COLORS.BG,
         },
       }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Home" component={TabNavigator} />
-      <Stack.Screen name="MovieDetails" component={MovieDetailScreen} />
+      {!isLoggedIn ? (
+        <Stack.Group>
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </Stack.Group>
+      ) : (
+        <Stack.Group>
+          <Stack.Screen name="Home" component={TabNavigator} />
+          <Stack.Screen name="MovieDetails" component={MovieDetailScreen} />
+        </Stack.Group>
+      )}
     </Stack.Navigator>
   );
 };

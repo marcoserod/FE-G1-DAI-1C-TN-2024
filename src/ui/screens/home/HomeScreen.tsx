@@ -1,14 +1,14 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import React from 'react';
 import {COLORS} from '../../../constants/colors';
-import {MoviesGrid} from '../../layout/MoviesGrid';
 import {MovieCard} from '../../components/movies/MovieCard';
 import IMAGES from '../../../assets/images';
 import I18n from '../../../assets/localization/i18n';
-import {useMovies} from '../../../networking/temporal/hooks/useMovies';
+import {useNowPlayingQuery} from '../../../services/movies';
+import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 export const HomeScreen = () => {
-  const {nowPlaying, isLoading} = useMovies();
+  const {data, isLoading} = useNowPlayingQuery({});
 
   return (
     <View style={styles.homeContainer}>
@@ -16,21 +16,22 @@ export const HomeScreen = () => {
         <Text style={styles.headerText}>{I18n.t('home.nowPlaying')}</Text>
         <IMAGES.SVG.APP_LOGO height={40} width={40} />
       </View>
-      <MoviesGrid>
-        {!isLoading ? (
-          nowPlaying.map(movie => (
-            <MovieCard
-              id={movie.id}
-              key={movie.id}
-              title={movie.title}
-              poster={movie.poster}
-              rating={movie.rating}
-            />
-          ))
-        ) : (
-          <Text>Cargando...</Text>
+      <LoadingModal isVisible={isLoading} />
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => index.toString()}
+        numColumns={2}
+        contentContainerStyle={styles.gridContainer}
+        columnWrapperStyle={styles.rowContainer}
+        renderItem={({item}) => (
+          <MovieCard
+            title={item.title}
+            id={item.id}
+            poster={item.poster}
+            rating={item.rating}
+          />
         )}
-      </MoviesGrid>
+      />
     </View>
   );
 };
@@ -56,5 +57,13 @@ const styles = StyleSheet.create({
     color: COLORS.TEXT,
     lineHeight: 50,
     fontWeight: '500',
+  },
+  gridContainer: {
+    rowGap: 16,
+    paddingVertical: 16,
+    marginHorizontal: 16,
+  },
+  rowContainer: {
+    justifyContent: 'space-between',
   },
 });

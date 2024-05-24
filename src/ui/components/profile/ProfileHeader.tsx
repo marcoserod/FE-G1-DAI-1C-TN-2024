@@ -6,11 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {COLORS} from '../../../constants/colors';
 
 import {ChangePhotoModal} from './ChangePhotoModal';
-
-interface User {
-  name: string;
-  nickName: string;
-}
+import {User} from '../../../services/entities/user.entity';
 
 interface Props {
   user: User;
@@ -46,12 +42,14 @@ export const ProfileHeader = ({
         ) : null}
         <View style={styles.userName}>
           <Text style={styles.greeting}>{`Hola ${user.name}`}</Text>
-          <Text style={styles.nickName}>{user.nickName}</Text>
+          <Text style={styles.nickName}>{`@${user.nickname}`}</Text>
         </View>
       </View>
       <View>
         <Image
-          source={{uri: 'https://i.stack.imgur.com/l60Hf.png'}}
+          source={{
+            uri: user.profileImage || 'https://i.stack.imgur.com/l60Hf.png',
+          }}
           style={styles.profilePicture}
         />
         {isEdit ? (

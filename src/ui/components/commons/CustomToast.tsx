@@ -23,9 +23,11 @@ const CloseIcon = () => {
 const Actions = ({onRetry}) => {
   return (
     <View style={styles.actions}>
-      <TouchableOpacity onPress={onRetry} style={styles.retry}>
-        <Text>{I18n.t('commons.retry')}</Text>
-      </TouchableOpacity>
+      {onRetry ? (
+        <TouchableOpacity onPress={onRetry} style={styles.retry}>
+          <Text>{I18n.t('commons.retry')}</Text>
+        </TouchableOpacity>
+      ) : null}
       <CloseIcon />
     </View>
   );
@@ -104,7 +106,7 @@ const toastConfig = {
   error: props => <ErrorToast {...props} />,
 };
 
-const showSuccessToast = ({title, message}) => {
+const showSuccessToast = ({title = I18n.t('commons.success'), message}) => {
   Toast.show({
     type: 'success',
     visibilityTime: 10000,
@@ -114,7 +116,11 @@ const showSuccessToast = ({title, message}) => {
   });
 };
 
-const showErrorToast = ({title, message, onRetry}) => {
+const showErrorToast = ({
+  title = I18n.t('commons.error'),
+  message,
+  onRetry,
+}) => {
   Toast.show({
     type: 'error',
     autoHide: false,

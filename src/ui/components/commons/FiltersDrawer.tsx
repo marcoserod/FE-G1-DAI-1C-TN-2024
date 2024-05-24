@@ -16,6 +16,7 @@ import {AccordionItem} from './AccordionItem';
 import {RadioButtonProps, RadioGroup} from 'react-native-radio-buttons-group';
 import I18n from '../../../assets/localization/i18n';
 import es from '../../../assets/localization/translations/es';
+import {useGenresQuery} from '../../../services/movies';
 
 const baseTabBarStyle = {
   paddingTop: 4,
@@ -26,6 +27,7 @@ const windowWidth = Dimensions.get('window').width;
 export const FiltersDrawer = ({open, setOpen, children}) => {
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState<string | undefined>();
+  const {data: genres} = useGenresQuery();
 
   const radioButtons: RadioButtonProps[] = useMemo(
     () => [
