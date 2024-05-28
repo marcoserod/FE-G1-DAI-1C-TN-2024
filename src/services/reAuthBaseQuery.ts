@@ -6,7 +6,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, {getState}) => {
     const token = getState().userSession.moviePlayToken;
     if (token) {
-      headers.set('Authorization', token);
+      headers.set('Authorization', `Bearer ${token}`);
     }
     headers.set('Content-Type', 'application/json');
     return headers;

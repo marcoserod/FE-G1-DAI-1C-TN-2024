@@ -1,46 +1,50 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  LayoutAnimation,
+  UIManager,
+  Platform,
+} from 'react-native';
 import {COLORS} from '../../../constants/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const AccordionItem = ({title, children}) => {
-  const [expanded, setExpanded] = useState(false);
-  const height = useSharedValue(0);
+if (
+  Platform.OS === 'android' &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-      overflow: 'hidden',
-    };
-  });
+export const AccordionItem = ({title, children, defaultExpanded = false}) => {
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   const toggleExpand = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(!expanded);
-    height.value = withTiming(expanded ? 0 : '100%', {duration: 300});
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <TouchableOpacity onPress={toggleExpand} style={styles.row}>
         <Text style={styles.title}>{title}</Text>
-
         <MaterialCommunityIcons
           name={expanded ? 'chevron-up' : 'chevron-down'}
           color={COLORS.TEXT}
           size={16}
         />
       </TouchableOpacity>
-      <Animated.View style={[animatedStyles]}>{children}</Animated.View>
+      {expanded && <View>{children}</View>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    overflow: 'hidden',
+  },
   row: {
     width: '100%',
     flexDirection: 'row',
@@ -48,11 +52,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     backgroundColor: COLORS.BG_3,
-    height: 40,
   },
   title: {
     color: COLORS.TEXT,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '600',
   },
 });

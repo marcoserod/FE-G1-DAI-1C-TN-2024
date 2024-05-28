@@ -7,35 +7,77 @@ export const moviesApi = createApi({
   reducerPath: 'movies',
   baseQuery: baseQueryWithReAuth,
   endpoints: builder => ({
-    nowPlaying: builder.query<Movie[], any>({
-      query: () => ({
+    nowPlaying: builder.query({
+      query: ({page}) => ({
         url: '/movies/nowPlaying',
-        params: {page: 1},
+        params: {page},
       }),
-      transformResponse: response => {
-        return response.movies?.map(MovieMapper.fromMoviePlayResultToEntity);
+      transformResponse: response => ({
+        movies: response.movies?.map(MovieMapper.fromMoviePlayResultToEntity),
+        totalRecords: response.metadata?.totalRecords,
+        currentPage: response.metadata?.currentPage,
+      }),
+      serializeQueryArgs: ({endpointName}) => {
+        return endpointName;
       },
+      merge: (currentCache, newItems) => {
+        currentCache.movies.push(...newItems.movies);
+      },
+      // Refetch when the page arg changes
+      forceRefetch({currentArg, previousArg}) {
+        return currentArg !== previousArg;
+      },
+    }),
+    getMovieById: builder.query<Movie, any>({
+      query: ({movieId}) => ({
+        url: `/movies/${movieId}`,
+      }),
+      /*   transformResponse: response => {
+        return response.movies?.map(MovieMapper.fromMoviePlayResultToEntity);
+      }, */
     }),
     genres: builder.query<any, any>({
       query: () => ({
         url: '/movies/genres',
       }),
     }),
-    search: builder.query<Movie[], any>({
-      query: ({searchValue}) => ({
+    search: builder.query({
+      query: ({searchValue, page, dateSort, rateSort}) => ({
         url: 'movies/search',
         params: {
           name: searchValue,
-          sortCriteria: 'date:desc,rate:desc',
-          page: 1,
+          sortCriteria: `date:${dateSort},rate:${rateSort}`,
+          page,
         },
       }),
-      transformResponse: response => {
-        return response.movies?.map(MovieMapper.fromMoviePlayResultToEntity);
+      transformResponse: response => ({
+        movies: response.movies?.map(MovieMapper.fromMoviePlayResultToEntity),
+        totalRecords: response.metadata?.totalRecords,
+        currentPage: response.metadata?.currentPage,
+      }),
+      serializeQueryArgs: ({endpointName}) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems, {arg}) => {
+        if (arg.page === 1) {
+          return {
+            ...currentCache,
+            movies: newItems.movies,
+          };
+        } else {
+          currentCache.movies.push(...newItems.movies);
+        }
+      },
+      forceRefetch({currentArg, previousArg}) {
+        return currentArg !== previousArg;
       },
     }),
   }),
 });
 
-export const {useNowPlayingQuery, useGenresQuery, useLazySearchQuery} =
-  moviesApi;
+export const {
+  useNowPlayingQuery,
+  useGenresQuery,
+  useLazySearchQuery,
+  useGetMovieByIdQuery,
+} = moviesApi;

@@ -9,8 +9,8 @@ export const authApi = createApi({
       query: idToken => ({
         url: '/auth',
         method: 'POST',
-        params: {
-          authenticationRequest: idToken,
+        body: {
+          authToken: idToken,
         },
       }),
     }),
@@ -18,7 +18,7 @@ export const authApi = createApi({
       query: refreshToken => ({
         url: 'auth',
         method: 'DELETE',
-        params: {
+        body: {
           refreshToken,
         },
       }),

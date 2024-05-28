@@ -7,6 +7,7 @@ import {
   TextInputSubmitEditingEventData,
   Pressable,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
@@ -17,42 +18,89 @@ import {FiltersDrawer} from '../../components/commons/FiltersDrawer';
 import {useLazySearchQuery} from '../../../services/movies';
 import {MovieCard} from '../../components/movies/MovieCard';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
-import {err} from 'react-native-svg';
 import {showErrorToast} from '../../components/commons/CustomToast';
 
 export const SearchScreen = () => {
-  const count = 0;
   const [searchValue, setSearchValue] = useState('');
+  const [page, setPage] = useState(1);
   const [filterVisible, setFiltersVisible] = useState(false);
-  const [triggerSearch, {data: movies, isLoading, error}] =
+  const [triggerSearch, {data, isLoading, error, isFetching}] =
     useLazySearchQuery();
   const [manualLoading, setManualLoading] = useState(false);
+  const count = data?.totalRecords;
+  const [sorting, setSorting] = useState({
+    date: 'desc',
+    rate: 'desc',
+  });
+  const [filters, setFilters] = useState([]);
 
   const handleSearch = async ({
     nativeEvent,
   }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
     const {text} = nativeEvent;
     setSearchValue(text);
+    setPage(1);
     setManualLoading(true);
-    await triggerSearch({searchValue: text});
+    await triggerSearch({
+      searchValue: text,
+      page: 1,
+      dateSort: sorting.date,
+      rateSort: sorting.rate,
+      filters,
+    });
+    setManualLoading(false);
+  };
+
+  const loadMore = () => {
+    if (!isFetching && data && data.movies.length < 5000) {
+      setPage(prev => prev + 1);
+      triggerSearch({
+        searchValue: searchValue,
+        page: page + 1,
+        dateSort: sorting.date,
+        rateSort: sorting.rate,
+        filters,
+      });
+    }
+  };
+
+  const handleFilters = async () => {
+    setManualLoading(true);
+    await triggerSearch({
+      searchValue: searchValue,
+      page: 1,
+      dateSort: sorting.date,
+      rateSort: sorting.rate,
+      filters,
+    });
     setManualLoading(false);
   };
 
   useEffect(() => {
+    if (searchValue) {
+      handleFilters();
+    }
+  }, [sorting]);
+
+  useEffect(() => {
     if (error) {
+      console.log(error);
       showErrorToast({message: 'Error inesperado'});
     }
   }, [error]);
 
   return (
-    <FiltersDrawer open={filterVisible} setOpen={setFiltersVisible}>
-      <LoadingModal isVisible={isLoading || manualLoading} />
+    <FiltersDrawer
+      open={filterVisible}
+      setOpen={setFiltersVisible}
+      {...{setSorting, setFilters}}>
+      {/* <LoadingModal isVisible={  isLoading || manualLoading} /> */}
       <View style={styles.container}>
         <SearchInput onSubmit={handleSearch} />
-        {!searchValue ? (
+        {searchValue ? (
           <Image style={styles.image} source={IMAGES.OTHERS.SEARCH_BG} />
         ) : (
-          movies && (
+          data?.movies || (
             <View style={styles.resultsAction}>
               <Text style={styles.textResult}>{`${count} resultados`}</Text>
               <Pressable
@@ -66,13 +114,21 @@ export const SearchScreen = () => {
             </View>
           )
         )}
-        {searchValue && movies ? (
+        {searchValue && data?.movies ? (
           <FlatList
-            data={movies}
+            showsVerticalScrollIndicator={false}
+            data={data?.movies}
             keyExtractor={(item, index) => index.toString()}
             numColumns={2}
             contentContainerStyle={styles.gridContainer}
             columnWrapperStyle={styles.rowContainer}
+            ListFooterComponent={
+              isFetching ? (
+                <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+              ) : null
+            }
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.8}
             renderItem={({item}) => (
               <MovieCard
                 title={item.title}

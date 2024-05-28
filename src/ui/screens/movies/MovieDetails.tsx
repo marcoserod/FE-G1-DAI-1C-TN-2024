@@ -19,12 +19,17 @@ import {useNavigation} from '@react-navigation/native';
 import {InfoTile} from '../../components/movies/InfoTile';
 import {CastActor} from '../../components/cast/CastActor';
 import {RatingTile} from '../../components/movies/RatingTile';
+import {useGetMovieByIdQuery} from '../../../services/movies';
 
 const MovieDetailScreen = ({route}) => {
   const {movieId} = route.params;
-  const {movie, isLoading} = useMovie(movieId);
+  /*   const {movie, isLoading} = useMovie(movieId); */
+  const {data, isLoading} = useGetMovieByIdQuery({movieId});
   const {cast = []} = useCast(movieId);
   const navigation = useNavigation();
+  const movie = null;
+
+  console.log(movieId);
 
   return (
     <View style={styles.container}>

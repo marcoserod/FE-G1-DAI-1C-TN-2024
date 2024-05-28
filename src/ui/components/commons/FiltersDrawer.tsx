@@ -4,7 +4,7 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
-  useWindowDimensions,
+  ScrollView,
 } from 'react-native';
 import React, {useMemo, useState} from 'react';
 import {Drawer} from 'react-native-drawer-layout';
@@ -15,40 +15,75 @@ import {Button} from './Button';
 import {AccordionItem} from './AccordionItem';
 import {RadioButtonProps, RadioGroup} from 'react-native-radio-buttons-group';
 import I18n from '../../../assets/localization/i18n';
-import es from '../../../assets/localization/translations/es';
+
 import {useGenresQuery} from '../../../services/movies';
+import CheckboxGroup from './checkbox/CheckboxGroup';
 
 const baseTabBarStyle = {
   paddingTop: 4,
   backgroundColor: COLORS.BG_3,
 };
-const windowWidth = Dimensions.get('window').width;
+const {width: windowWidth} = Dimensions.get('window');
 
-export const FiltersDrawer = ({open, setOpen, children}) => {
+export const FiltersDrawer = ({open, setOpen, children, setSorting}) => {
   const navigation = useNavigation();
-  const [selectedId, setSelectedId] = useState<string | undefined>();
-  const {data: genres} = useGenresQuery();
+
+  const {data: genres} = useGenresQuery({});
+  const [selectedDateSort, setSelectedDateSort] = useState('desc');
+  const [selectedRateSort, setSelectedRateSort] = useState('desc');
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+
+  const options = genres?.genreList?.map(genre => ({
+    id: genre.id,
+    label: genre.name,
+  }));
 
   const radioButtons: RadioButtonProps[] = useMemo(
     () => [
       {
-        id: '1', // acts as primary key, should be unique and non-empty string
+        id: 'desc',
         label: I18n.t('filters.moreRecent'),
-        value: 'option1',
+        value: 'desc',
         color: COLORS.PRIMARY,
-        borderColor: selectedId === '1' ? COLORS.PRIMARY : COLORS.TEXT_2,
+        borderColor:
+          selectedDateSort === 'desc' ? COLORS.PRIMARY : COLORS.TEXT_2,
         containerStyle: styles.radioStyles,
       },
       {
-        id: '2',
+        id: 'asc',
         label: I18n.t('filters.lessRecent'),
-        value: 'option2',
+        value: 'asc',
         color: COLORS.PRIMARY,
-        borderColor: selectedId === '2' ? COLORS.PRIMARY : COLORS.TEXT_2,
+        borderColor:
+          selectedDateSort === 'asc' ? COLORS.PRIMARY : COLORS.TEXT_2,
         containerStyle: styles.radioStyles,
       },
     ],
-    [selectedId],
+    [selectedDateSort],
+  );
+
+  const rateRadioButtons: RadioButtonProps[] = useMemo(
+    () => [
+      {
+        id: 'desc',
+        label: I18n.t('filters.bestRated'),
+        value: 'desc',
+        color: COLORS.PRIMARY,
+        borderColor:
+          selectedRateSort === 'desc' ? COLORS.PRIMARY : COLORS.TEXT_2,
+        containerStyle: styles.radioStyles,
+      },
+      {
+        id: 'asc',
+        label: I18n.t('filters.worstRated'),
+        value: 'asc',
+        color: COLORS.PRIMARY,
+        borderColor:
+          selectedRateSort === 'asc' ? COLORS.PRIMARY : COLORS.TEXT_2,
+        containerStyle: styles.radioStyles,
+      },
+    ],
+    [selectedRateSort],
   );
 
   const handleOpen = () => {
@@ -70,6 +105,23 @@ export const FiltersDrawer = ({open, setOpen, children}) => {
       },
     });
   };
+
+  const handleOnApply = () => {
+    setSorting({
+      date: selectedDateSort,
+      rate: selectedDateSort,
+    });
+    handleClose();
+  };
+
+  const handleOnClean = () => {
+    setSorting({
+      date: 'desc',
+      rate: 'desc',
+    });
+    setSelectedGenres([]);
+  };
+
   return (
     <Drawer
       swipeEnabled={false}
@@ -93,32 +145,53 @@ export const FiltersDrawer = ({open, setOpen, children}) => {
                 />
               </Pressable>
             </View>
-            <AccordionItem title={'Ordenar por'}>
-              <Text style={styles.radioStyles}>
-                {I18n.t('filters.timeGroup')}
-              </Text>
-              <RadioGroup
-                containerStyle={styles.radioContainer}
-                labelStyle={styles.radioLabel}
-                radioButtons={radioButtons}
-                onPress={setSelectedId}
-                selectedId={selectedId}
-              />
-              <Text style={styles.radioStyles}>
-                {I18n.t('filters.ratingGroup')}
-              </Text>
-              <RadioGroup
-                containerStyle={styles.radioContainer}
-                labelStyle={styles.radioLabel}
-                radioButtons={radioButtons}
-                onPress={setSelectedId}
-                selectedId={selectedId}
-              />
-            </AccordionItem>
+            <ScrollView>
+              <AccordionItem title={'Ordenar por'} defaultExpanded={true}>
+                <Text style={styles.radioStyles}>
+                  {I18n.t('filters.timeGroup')}
+                </Text>
+                <RadioGroup
+                  containerStyle={styles.radioContainer}
+                  labelStyle={styles.radioLabel}
+                  radioButtons={radioButtons}
+                  onPress={setSelectedDateSort}
+                  selectedId={selectedDateSort}
+                />
+                <Text style={styles.radioStyles}>
+                  {I18n.t('filters.ratingGroup')}
+                </Text>
+                <RadioGroup
+                  containerStyle={styles.radioContainer}
+                  labelStyle={styles.radioLabel}
+                  radioButtons={rateRadioButtons}
+                  onPress={setSelectedRateSort}
+                  selectedId={selectedRateSort}
+                />
+              </AccordionItem>
+              <AccordionItem title={'Filtrar por'}>
+                <Text style={styles.radioStyles}>
+                  {I18n.t('filters.genreGroup')}
+                </Text>
+                <CheckboxGroup
+                  options={options}
+                  selectedOptions={selectedGenres}
+                  setSelectedOptions={setSelectedGenres}
+                />
+              </AccordionItem>
+            </ScrollView>
 
             <View style={styles.actionButtons}>
-              <Button label="APLICAR" type="text" color={COLORS.PRIMARY_2} />
-              <Button label="BORRAR" type="text" />
+              <Button
+                label={I18n.t('filters.apply')?.toUpperCase()}
+                type="text"
+                color={COLORS.PRIMARY_2}
+                onPress={handleOnApply}
+              />
+              <Button
+                label={I18n.t('filters.clean')?.toUpperCase()}
+                type="text"
+                onPress={handleOnClean}
+              />
             </View>
           </View>
         );

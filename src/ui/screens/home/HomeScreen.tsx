@@ -1,5 +1,11 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
 import {MovieCard} from '../../components/movies/MovieCard';
 import IMAGES from '../../../assets/images';
@@ -8,7 +14,14 @@ import {useNowPlayingQuery} from '../../../services/movies';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 export const HomeScreen = () => {
-  const {data, isLoading} = useNowPlayingQuery({});
+  const [page, setPage] = useState(1);
+  const {data, isLoading, isFetching} = useNowPlayingQuery({page});
+
+  const loadMore = () => {
+    if (!isFetching && data && data.movies.length < 5000) {
+      setPage(prev => prev + 1);
+    }
+  };
 
   return (
     <View style={styles.homeContainer}>
@@ -18,11 +31,18 @@ export const HomeScreen = () => {
       </View>
       <LoadingModal isVisible={isLoading} />
       <FlatList
-        data={data}
+        data={data?.movies}
         keyExtractor={(item, index) => index.toString()}
         numColumns={2}
         contentContainerStyle={styles.gridContainer}
         columnWrapperStyle={styles.rowContainer}
+        onEndReached={loadMore}
+        ListFooterComponent={
+          !isLoading && isFetching ? (
+            <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+          ) : null
+        }
+        onEndReachedThreshold={0.8}
         renderItem={({item}) => (
           <MovieCard
             title={item.title}

@@ -10,8 +10,9 @@ import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 export const EditProfileScreen = () => {
   const userId = useSelector(state => state?.userSession?.userId);
-  console.log(userId);
-  const {data, isLoading} = useGetUserByIdQuery({userId});
+  const {data, isLoading, refetch, isFetching} = useGetUserByIdQuery({userId});
+  console.log(isFetching);
+  console.log('userData:', data);
   const user = data;
   if (isLoading) {
     return <LoadingModal isVisible />;
@@ -20,7 +21,7 @@ export const EditProfileScreen = () => {
   return (
     <View style={styles.container}>
       <ProfileHeader user={user} showBack isEdit />
-      <EditProfileForm user={user} />
+      <EditProfileForm user={user} refetch={refetch} />
     </View>
   );
 };
