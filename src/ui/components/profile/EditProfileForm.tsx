@@ -23,40 +23,14 @@ export const EditProfileForm = ({user, refetch}) => {
   });
 
   const handleFormSubmit = async values => {
-    const userData = values;
+    const payload = {userData: values};
     try {
-      await editUser({userId: id, userData});
+      await editUser({userId: id, payload});
       showSuccessToast({message: I18n.t('profile.editProfileSuccess')});
-      await refetch();
+      refetch();
       navigation.navigate('Profile');
     } catch (error) {
       showErrorToast({message: error.message});
-    }
-  };
-
-  const handleUpdate = async () => {
-    ///PARA PROBAR
-    const userId = 9;
-    const formData = new FormData();
-    formData.append('userData', JSON.stringify({nickname: 'mono'}));
-
-    try {
-      const response = await axios.patch(
-        `https://be-g1-dai-1c-tn-2024.onrender.com/users/${userId}`,
-        formData,
-        {
-          headers: {
-            Authorization:
-              'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtZXIubWFyY29zckBnbWFpbC5jb20iLCJpYXQiOjE3MTY5MTMyNjQsImV4cCI6MTcxNjkxNjg2NCwiaXNBY3RpdmUiOnRydWV9.xoyy-6dijjdFnIKUpU1t8vbzjOP3bBgjz1RoIMa6o6HD_OYOfll_GLcwgQVWNEOBHIPBAhvo7_NsLCbEpUTY0w',
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
-          },
-        },
-      );
-
-      console.log('Usuario actualizado exitosamente', response.data);
-    } catch (error) {
-      console.error('Error actualizando usuario:', error);
     }
   };
 
@@ -64,7 +38,7 @@ export const EditProfileForm = ({user, refetch}) => {
     <Formik
       initialValues={{email, name, surname, nickname}}
       validationSchema={profileSchema}
-      onSubmit={handleUpdate}>
+      onSubmit={handleFormSubmit}>
       {({
         handleChange,
         handleBlur,

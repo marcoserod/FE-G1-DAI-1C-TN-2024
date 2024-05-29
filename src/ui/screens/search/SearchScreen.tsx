@@ -28,11 +28,13 @@ export const SearchScreen = () => {
     useLazySearchQuery();
   const [manualLoading, setManualLoading] = useState(false);
   const count = data?.totalRecords;
+  const totalPages = data?.totalPages;
   const [sorting, setSorting] = useState({
     date: 'desc',
     rate: 'desc',
   });
   const [filters, setFilters] = useState([]);
+  console.log(totalPages);
 
   const handleSearch = async ({
     nativeEvent,
@@ -51,8 +53,11 @@ export const SearchScreen = () => {
     setManualLoading(false);
   };
 
+  console.log('pages===>', totalPages);
+  console.log('filters=>', filters);
+
   const loadMore = () => {
-    if (!isFetching && data && data.movies.length < 5000) {
+    if (!isFetching && data && page < totalPages) {
       setPage(prev => prev + 1);
       triggerSearch({
         searchValue: searchValue,
@@ -80,7 +85,7 @@ export const SearchScreen = () => {
     if (searchValue) {
       handleFilters();
     }
-  }, [sorting]);
+  }, [sorting, filters]);
 
   useEffect(() => {
     if (error) {
@@ -94,15 +99,17 @@ export const SearchScreen = () => {
       open={filterVisible}
       setOpen={setFiltersVisible}
       {...{setSorting, setFilters}}>
-      {/* <LoadingModal isVisible={  isLoading || manualLoading} /> */}
+      <LoadingModal isVisible={isLoading || manualLoading} />
       <View style={styles.container}>
         <SearchInput onSubmit={handleSearch} />
-        {searchValue ? (
+        {!searchValue ? (
           <Image style={styles.image} source={IMAGES.OTHERS.SEARCH_BG} />
         ) : (
-          data?.movies || (
+          data?.movies && (
             <View style={styles.resultsAction}>
-              <Text style={styles.textResult}>{`${count} resultados`}</Text>
+              {count ? (
+                <Text style={styles.textResult}>{`${count} resultados`}</Text>
+              ) : null}
               <Pressable
                 onPress={() => setFiltersVisible(prevOpen => !prevOpen)}>
                 <MaterialCommunityIcons

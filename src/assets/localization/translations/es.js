@@ -49,6 +49,8 @@ export default {
     logoutError: 'No pudimos cerrar la sesión',
     requiredField: 'El campo es requerido.',
     editProfileSuccess: 'Se actualizó su perfil.',
+    deleteSuccess: 'Se eliminó la cuenta',
+    deleteError: 'No pudimos eliminar la cuenta',
   },
   favorites: {
     yours: 'Tus favoritos',

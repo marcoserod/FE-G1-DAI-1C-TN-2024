@@ -1,7 +1,6 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import baseQueryWithReAuth from './reAuthBaseQuery';
 import {User} from './entities/user.entity';
-import axios from 'axios';
 
 export const usersApi = createApi({
   reducerPath: 'users',
@@ -13,40 +12,23 @@ export const usersApi = createApi({
       }),
     }),
     editUser: builder.mutation({
-      queryFn: async (
-        {userId, userData},
-        _queryApi,
-        _extraOptions,
-        baseQuery,
-      ) => {
-        const state = _queryApi.getState();
-        const token = state.userSession.moviePlayToken;
+      query: ({userId, payload}) => {
         const formData = new FormData();
-        const userDataBlob = new Blob([JSON.stringify(userData)], {
-          type: 'application/json',
-        });
-        formData.append('userData', userDataBlob);
-
-        try {
-          const response = await axios({
-            method: 'PATCH',
-            url: `https://be-g1-dai-1c-tn-2024.onrender.com/users/${userId}`,
-            data: formData,
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-
-          return {data: response.data};
-        } catch (error) {
-          return {
-            error: {
-              status: error.response?.status,
-              data: error.response?.data || error.message,
-            },
-          };
+        if (payload.profileImage) {
+          formData.append('profileImage', payload.profileImage);
+          console.log(formData.getParts());
         }
+        if (payload.userData) {
+          const {name, surname, nickname} = payload.userData;
+          formData.append('name', name);
+          formData.append('surname', surname);
+          formData.append('nickname', nickname);
+        }
+        return {
+          url: `/users/${userId}`,
+          method: 'PATCH',
+          body: formData,
+        };
       },
     }),
     deleteUser: builder.mutation({
@@ -58,4 +40,5 @@ export const usersApi = createApi({
   }),
 });
 
-export const {useGetUserByIdQuery, useEditUserMutation} = usersApi;
+export const {useGetUserByIdQuery, useEditUserMutation, useDeleteUserMutation} =
+  usersApi;

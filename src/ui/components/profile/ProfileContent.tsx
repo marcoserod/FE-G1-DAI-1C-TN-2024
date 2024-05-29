@@ -11,6 +11,7 @@ import {useLogoutMutation} from '../../../services/auth';
 import {LoadingModal} from '../commons/modal/LoadingModal';
 import {logOut} from '../../../store/authSlice';
 import {showErrorToast, showSuccessToast} from '../commons/CustomToast';
+import {useDeleteUserMutation} from '../../../services/user';
 
 const handlePressableStyle = ({pressed}) => [
   {
@@ -30,7 +31,9 @@ export const ProfileContent = () => {
   const {isConfirmVisible, handleModalVisibility} = useConfirmModal();
   const [confirmModalData, setConfirmModalData] = useState(logoutModalData);
   const refreshToken = useSelector(state => state?.userSession?.refreshToken);
+  const userId = useSelector(state => state?.userSession?.userId);
   const [logoutMutation, {isLoading: isLoggingOut}] = useLogoutMutation();
+  const [deleteMutation, {isLoading: isDeleting}] = useDeleteUserMutation();
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
@@ -41,6 +44,19 @@ export const ProfileContent = () => {
     } catch (error) {
       showErrorToast({
         message: I18n.t('profile.logoutError'),
+        onRetry: handleLogout,
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteMutation({userId});
+      dispatch(logOut());
+      showSuccessToast({message: I18n.t('profile.deleteSuccess')});
+    } catch (error) {
+      showErrorToast({
+        message: I18n.t('profile.deleteError'),
         onRetry: handleLogout,
       });
     }
@@ -57,16 +73,14 @@ export const ProfileContent = () => {
     setConfirmModalData({
       modalMessage: I18n.t('delete.message'),
       modalSubMessage: I18n.t('delete.subMessage'),
-      onConfirm: () => {
-        console.log('delete');
-      },
+      onConfirm: handleDelete,
     });
     handleModalVisibility();
   };
 
   return (
     <View style={styles.container}>
-      <LoadingModal isVisible={isLoggingOut} />
+      <LoadingModal isVisible={isLoggingOut || isDeleting} />
       <ConfirmModal
         onConfirm={confirmModalData.onConfirm}
         message={confirmModalData.modalMessage}

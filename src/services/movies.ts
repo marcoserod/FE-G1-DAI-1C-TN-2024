@@ -15,6 +15,7 @@ export const moviesApi = createApi({
       transformResponse: response => ({
         movies: response.movies?.map(MovieMapper.fromMoviePlayResultToEntity),
         totalRecords: response.metadata?.totalRecords,
+        totalPages: response.metadata?.totalPages,
         currentPage: response.metadata?.currentPage,
       }),
       serializeQueryArgs: ({endpointName}) => {
@@ -42,17 +43,19 @@ export const moviesApi = createApi({
       }),
     }),
     search: builder.query({
-      query: ({searchValue, page, dateSort, rateSort}) => ({
+      query: ({searchValue, page, dateSort, rateSort, filters}) => ({
         url: 'movies/search',
         params: {
           name: searchValue,
           sortCriteria: `date:${dateSort},rate:${rateSort}`,
+          filters: filters.join(','),
           page,
         },
       }),
       transformResponse: response => ({
         movies: response.movies?.map(MovieMapper.fromMoviePlayResultToEntity),
         totalRecords: response.metadata?.totalRecords,
+        totalPages: response.metadata?.totalPages,
         currentPage: response.metadata?.currentPage,
       }),
       serializeQueryArgs: ({endpointName}) => {
@@ -60,10 +63,7 @@ export const moviesApi = createApi({
       },
       merge: (currentCache, newItems, {arg}) => {
         if (arg.page === 1) {
-          return {
-            ...currentCache,
-            movies: newItems.movies,
-          };
+          return newItems;
         } else {
           currentCache.movies.push(...newItems.movies);
         }

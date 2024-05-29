@@ -31,7 +31,12 @@ export const FavoritesScreen = () => {
           Aun no tienes peliculas agregadas en tus favoritos, empieza buscando
           alguna
         </Text>
-        <Button label="Buscar peliculas" />
+        <View>
+          <Button
+            label="Buscar peliculas"
+            onPress={() => navigation.navigate('Search')}
+          />
+        </View>
       </View>
     </View>
   );

@@ -16,9 +16,7 @@ interface StyleProps {
 }
 
 export const Button = ({
-  onPress = () => {
-    console.log('pressed');
-  },
+  onPress = () => {},
   type = 'filled',
   label = '',
   Icon,

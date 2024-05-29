@@ -8,17 +8,14 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
-    headers.set('Content-Type', 'application/json');
     return headers;
   },
 });
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
-  console.log('Making request to:', args);
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    console.log('entered  auth');
     const refreshToken = api.getState().userSession.refreshToken;
     const refreshResult = await baseQuery(
       {
@@ -38,10 +35,8 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
           refreshToken: refreshResult.data.refreshToken,
         }),
       );
-      console.log('entered  retry');
       result = await baseQuery(args, api, extraOptions);
     } else {
-      console.log('Token refresh failed, logging out');
       api.dispatch(logOut());
     }
   }

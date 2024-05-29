@@ -25,7 +25,13 @@ const baseTabBarStyle = {
 };
 const {width: windowWidth} = Dimensions.get('window');
 
-export const FiltersDrawer = ({open, setOpen, children, setSorting}) => {
+export const FiltersDrawer = ({
+  open,
+  setOpen,
+  children,
+  setSorting,
+  setFilters,
+}) => {
   const navigation = useNavigation();
 
   const {data: genres} = useGenresQuery({});
@@ -111,15 +117,20 @@ export const FiltersDrawer = ({open, setOpen, children, setSorting}) => {
       date: selectedDateSort,
       rate: selectedDateSort,
     });
+    setFilters(selectedGenres);
     handleClose();
   };
 
   const handleOnClean = () => {
+    setSelectedGenres([]);
+    setSelectedRateSort('desc');
+    setSelectedDateSort('desc');
     setSorting({
       date: 'desc',
       rate: 'desc',
     });
-    setSelectedGenres([]);
+    setFilters([]);
+    handleClose();
   };
 
   return (
