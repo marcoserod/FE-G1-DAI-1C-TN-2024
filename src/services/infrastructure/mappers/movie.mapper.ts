@@ -1,5 +1,5 @@
-import {Movie} from '../../entities/movie.entity';
-import {Result} from '../interfaces/moviePlay.responses';
+import {FullMovie, Movie} from '../../entities/movie.entity';
+import {FullMovieResult, Result} from '../interfaces/moviePlay.responses';
 
 export class MovieMapper {
   static fromMoviePlayResultToEntity(result: Result): Movie {
@@ -13,23 +13,28 @@ export class MovieMapper {
     };
   }
 
-  /*  static fromMoviePlayToEntity(movie: MovieResponse): FullMovie {
+  static fromMoviePlayToEntity(result: FullMovieResult): FullMovie {
+    const {
+      movie,
+      movieCast: {cast},
+    } = result;
     return {
       id: movie.id,
       title: movie.title,
       description: movie.overview,
-      releaseDate: new Date(movie.release_date),
+      releaseDate: movie.release_date,
       rating: movie.vote_average,
-      poster: `http://image.tmdb.org/t/p/w500${movie.poster_path}`,
-      backdrop: `http://image.tmdb.org/t/p/w500${movie.backdrop_path}`,
-      genres: movie.genres.map(genre => genre.name),
+      poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+      genres: movie.genres?.map(genre => genre.name) || [],
       duration: movie.runtime,
-      budget: movie.budget,
       subtitle: movie.tagline,
-      productionCompanies: movie.production_companies.map(
-        company => company.name,
-      ),
       ratingCount: movie.vote_count,
+      cast: cast?.map(actor => ({
+        id: actor.id,
+        name: actor.name,
+        character: actor.character || '',
+        avatar: `https://image.tmdb.org/t/p/w500${actor.profile_path}`,
+      })),
     };
-  } */
+  }
 }

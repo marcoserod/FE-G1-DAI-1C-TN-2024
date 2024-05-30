@@ -1,3 +1,5 @@
+import {Cast} from './cast.entity';
+
 export interface Movie {
   id: number;
   title: string;
@@ -12,4 +14,5 @@ export interface FullMovie extends Movie {
   duration: number;
   subtitle: string;
   ratingCount: number;
+  cast: Cast[];
 }

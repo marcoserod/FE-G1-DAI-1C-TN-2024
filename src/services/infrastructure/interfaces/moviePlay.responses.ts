@@ -1,7 +1,6 @@
 export interface NowPlayingResponse {
   movies: Result[];
 }
-
 export interface Result {
   id: number;
   title: string;
@@ -12,11 +11,12 @@ export interface Result {
   vote_count: number;
 }
 
-export interface FullMovieResponse {
-  movie: Result;
+export interface FullMovieResult {
+  movie: Movie;
   movieTrailer: MovieTrailer;
   movieCast: MovieCast;
   imageList: ImageList;
+  metadata: null;
 }
 
 export interface ImageList {
@@ -25,6 +25,18 @@ export interface ImageList {
 
 export interface Image {
   file_path: string;
+}
+
+export interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  overview: string;
+  release_date: Date;
+  vote_average: number;
+  vote_count: number;
+  runtime: number;
+  tagline: string;
 }
 
 export interface MovieCast {

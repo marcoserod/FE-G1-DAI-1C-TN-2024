@@ -21,11 +21,12 @@ export class Formatter {
     return result.trim();
   }
 
-  public static date(date: Date | undefined): string {
+  public static date(date: string | undefined): string {
     if (!date) {
       return '';
     }
-    return date.toLocaleDateString('es', {
+    const newDate = new Date(date);
+    return newDate.toLocaleDateString('es', {
       month: 'long',
       year: 'numeric',
       day: 'numeric',

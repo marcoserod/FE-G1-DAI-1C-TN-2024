@@ -34,7 +34,6 @@ export const SearchScreen = () => {
     rate: 'desc',
   });
   const [filters, setFilters] = useState([]);
-  console.log(totalPages);
 
   const handleSearch = async ({
     nativeEvent,
@@ -52,9 +51,6 @@ export const SearchScreen = () => {
     });
     setManualLoading(false);
   };
-
-  console.log('pages===>', totalPages);
-  console.log('filters=>', filters);
 
   const loadMore = () => {
     if (!isFetching && data && page < totalPages) {
@@ -89,7 +85,6 @@ export const SearchScreen = () => {
 
   useEffect(() => {
     if (error) {
-      console.log(error);
       showErrorToast({message: 'Error inesperado'});
     }
   }, [error]);

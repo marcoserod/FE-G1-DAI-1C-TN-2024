@@ -9,7 +9,6 @@ import {
   FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {useCast, useMovie} from '../../../networking/temporal/hooks/useMovie';
 import {Chip} from '../../components/commons/Chip';
 import {Formatter} from '../../../assets/helpers/formatter';
 import {COLORS} from '../../../constants/colors';
@@ -20,16 +19,13 @@ import {InfoTile} from '../../components/movies/InfoTile';
 import {CastActor} from '../../components/cast/CastActor';
 import {RatingTile} from '../../components/movies/RatingTile';
 import {useGetMovieByIdQuery} from '../../../services/movies';
+import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 const MovieDetailScreen = ({route}) => {
   const {movieId} = route.params;
-  /*   const {movie, isLoading} = useMovie(movieId); */
-  const {data, isLoading} = useGetMovieByIdQuery({movieId});
-  const {cast = []} = useCast(movieId);
-  const navigation = useNavigation();
-  const movie = null;
+  const {data: movie, isLoading} = useGetMovieByIdQuery({movieId});
 
-  console.log(movieId);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -42,6 +38,7 @@ const MovieDetailScreen = ({route}) => {
           />
         </Pressable>
       </View>
+      <LoadingModal isVisible={isLoading} />
       {!isLoading ? (
         <ImageBackground
           source={{uri: movie?.poster}}
@@ -106,7 +103,7 @@ const MovieDetailScreen = ({route}) => {
             </InfoTile>
             <InfoTile title={I18n.t('movie.cast')}>
               <FlatList
-                data={cast}
+                data={movie?.cast}
                 keyExtractor={item => item.id.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}

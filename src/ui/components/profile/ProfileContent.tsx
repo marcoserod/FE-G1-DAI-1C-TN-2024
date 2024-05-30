@@ -22,9 +22,7 @@ const handlePressableStyle = ({pressed}) => [
 const logoutModalData = {
   modalMessage: I18n.t('logout.message'),
   modalSubMessage: '',
-  onConfirm: () => {
-    console.log('logout');
-  },
+  onConfirm: () => {},
 };
 export const ProfileContent = () => {
   const navigation = useNavigation();

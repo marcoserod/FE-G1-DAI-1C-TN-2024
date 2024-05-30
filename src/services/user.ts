@@ -16,7 +16,6 @@ export const usersApi = createApi({
         const formData = new FormData();
         if (payload.profileImage) {
           formData.append('profileImage', payload.profileImage);
-          console.log(formData.getParts());
         }
         if (payload.userData) {
           const {name, surname, nickname} = payload.userData;

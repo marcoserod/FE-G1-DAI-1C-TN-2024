@@ -1,7 +1,8 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {MovieMapper} from './infrastructure/mappers/movie.mapper';
-import {Movie} from './entities/movie.entity';
+import {FullMovie, Movie} from './entities/movie.entity';
 import baseQueryWithReAuth from './reAuthBaseQuery';
+import {FullMovieResult} from './infrastructure/interfaces/moviePlay.responses';
 
 export const moviesApi = createApi({
   reducerPath: 'movies',
@@ -24,18 +25,17 @@ export const moviesApi = createApi({
       merge: (currentCache, newItems) => {
         currentCache.movies.push(...newItems.movies);
       },
-      // Refetch when the page arg changes
       forceRefetch({currentArg, previousArg}) {
         return currentArg !== previousArg;
       },
     }),
-    getMovieById: builder.query<Movie, any>({
+    getMovieById: builder.query<FullMovie, any>({
       query: ({movieId}) => ({
         url: `/movies/${movieId}`,
       }),
-      /*   transformResponse: response => {
-        return response.movies?.map(MovieMapper.fromMoviePlayResultToEntity);
-      }, */
+      transformResponse: (response: FullMovieResult) => {
+        return MovieMapper.fromMoviePlayToEntity(response);
+      },
     }),
     genres: builder.query<any, any>({
       query: () => ({
