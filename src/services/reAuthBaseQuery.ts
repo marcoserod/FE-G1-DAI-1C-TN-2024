@@ -1,8 +1,10 @@
 import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {logOut, setCredentials} from '../store/authSlice';
 
+import {API_BASE_URL} from '@env';
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.API_BASE_URL,
+  baseUrl: API_BASE_URL,
   prepareHeaders: (headers, {getState}) => {
     const token = getState().userSession.moviePlayToken;
     if (token) {

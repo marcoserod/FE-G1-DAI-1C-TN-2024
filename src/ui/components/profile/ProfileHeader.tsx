@@ -50,6 +50,9 @@ export const ProfileHeader = ({
           source={{
             uri: user.profileImage || 'https://i.stack.imgur.com/l60Hf.png',
           }}
+          onError={e =>
+            console.error('Error loading image:', e.nativeEvent.error)
+          }
           style={styles.profilePicture}
         />
         {isEdit ? (

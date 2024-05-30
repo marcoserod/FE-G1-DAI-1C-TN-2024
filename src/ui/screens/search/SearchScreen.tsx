@@ -114,7 +114,7 @@ export const SearchScreen = () => {
                 onPress={() => setFiltersVisible(prevOpen => !prevOpen)}>
                 <MaterialCommunityIcons
                   name="filter-outline"
-                  color={COLORS.TEXT}
+                  color={filters?.length ? COLORS.PRIMARY : COLORS.TEXT}
                   size={20}
                 />
               </Pressable>

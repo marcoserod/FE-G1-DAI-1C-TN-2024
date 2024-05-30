@@ -10,8 +10,9 @@ import Toast from 'react-native-toast-message';
 import {toastConfig} from './components/commons/CustomToast';
 import {Provider as ReduxProvider} from 'react-redux';
 import {store} from '../store/reduxStore';
-import {useNetInfo} from '@react-native-community/netinfo';
+
 import {NoConnectionScreen} from './screens/noConnection/NoConnectionScreen';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 function App(): React.JSX.Element {
   const netInfo = useNetInfo();

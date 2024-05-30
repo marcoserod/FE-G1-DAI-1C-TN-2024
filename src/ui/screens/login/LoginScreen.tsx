@@ -17,9 +17,11 @@ import {useLoginMutation} from '../../../services/auth';
 import {useDispatch} from 'react-redux';
 import {setCredentials} from '../../../store/authSlice';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
+import {showErrorToast} from '../../components/commons/CustomToast';
+import {GOOGLE_WEB_CLIENT_ID} from '@env';
 
 GoogleSignin.configure({
-  webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
+  webClientId: GOOGLE_WEB_CLIENT_ID,
   scopes: ['profile', 'email'],
 });
 
@@ -42,6 +44,7 @@ const LoginScreen = () => {
         }),
       );
     } catch (error) {
+      showErrorToast({message: error?.message});
       console.log(error);
     }
   };

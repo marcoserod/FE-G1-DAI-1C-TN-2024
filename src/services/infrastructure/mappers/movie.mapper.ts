@@ -9,7 +9,7 @@ export class MovieMapper {
       description: result.overview,
       releaseDate: result.release_date,
       rating: result.vote_average,
-      poster: `http://image.tmdb.org/t/p/w500${result.poster_path}`,
+      poster: `https://image.tmdb.org/t/p/w500${result.poster_path}`,
     };
   }
 

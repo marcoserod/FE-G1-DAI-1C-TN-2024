@@ -23,7 +23,13 @@ export const MovieCard = ({title, poster, rating, id}: Props) => {
         opacity: pressed ? 0.9 : 1,
       })}>
       <View style={styles.card}>
-        <Image style={styles.poster} source={{uri: poster}} />
+        <Image
+          style={styles.poster}
+          source={{uri: poster}}
+          onError={e =>
+            console.error('Error loading image:', e.nativeEvent.error)
+          }
+        />
         <View style={styles.ratingContainer}>
           <MaterialCommunityIcons name="star" color={COLORS.ACCENT} size={12} />
           <Text style={styles.rating}>{Formatter.rating(rating)}</Text>
