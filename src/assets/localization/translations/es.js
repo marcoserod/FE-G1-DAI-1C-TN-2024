@@ -35,6 +35,7 @@ export default {
   },
   search: {
     searchPlaceholder: 'Buscá por película o actor',
+    noResults: '¡Ups! Nada por aquí.',
   },
   profile: {
     edit: 'Editar Perfil',

@@ -19,6 +19,7 @@ import {useLazySearchQuery} from '../../../services/movies';
 import {MovieCard} from '../../components/movies/MovieCard';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 import {showErrorToast} from '../../components/commons/CustomToast';
+import I18n from '../../../assets/localization/i18n';
 
 export const SearchScreen = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -97,7 +98,7 @@ export const SearchScreen = () => {
         {!searchValue ? (
           <Image style={styles.image} source={IMAGES.OTHERS.SEARCH_BG} />
         ) : (
-          data?.movies && (
+          data?.movies?.length && (
             <View style={styles.resultsAction}>
               {count ? (
                 <Text style={styles.textResult}>{`${count} resultados`}</Text>
@@ -137,7 +138,14 @@ export const SearchScreen = () => {
               />
             )}
           />
-        ) : null}
+        ) : (
+          <View style={styles.noResultsView}>
+            <Text style={styles.noResultsText}>
+              {I18n.t('search.noResults')}
+            </Text>
+            <Image source={IMAGES.OTHERS.NO_RESULTS} />
+          </View>
+        )}
       </View>
     </FiltersDrawer>
   );
@@ -173,5 +181,14 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     justifyContent: 'space-between',
+  },
+  noResultsView: {
+    alignItems: 'center',
+    marginVertical: 'auto',
+  },
+  noResultsText: {
+    color: COLORS.TEXT,
+    marginBottom: 32,
+    fontSize: 16,
   },
 });

@@ -16,6 +16,7 @@ const IMAGES = {
     LOGO_NAME: require('./logo/moviePlayLogoName.png'),
     SEARCH_BG: require('./backgrounds/search.png'),
     NO_CONNECTION_BG: require('./backgrounds/noConnection.png'),
+    NO_RESULTS: require('./backgrounds/noResults.png'),
   },
 };
 
