@@ -35,10 +35,7 @@ export const SearchScreen = () => {
   });
   const [filters, setFilters] = useState([]);
 
-  const handleSearch = async ({
-    nativeEvent,
-  }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-    const {text} = nativeEvent;
+  const handleSearch = async (text: string) => {
     setSearchValue(text);
     setPage(1);
     setManualLoading(true);
@@ -116,7 +113,7 @@ export const SearchScreen = () => {
             </View>
           )
         )}
-        {searchValue && data?.movies ? (
+        {searchValue && data?.movies?.length ? (
           <FlatList
             showsVerticalScrollIndicator={false}
             data={data?.movies}

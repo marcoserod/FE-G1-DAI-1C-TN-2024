@@ -33,7 +33,9 @@ export class MovieMapper {
         id: actor.id,
         name: actor.name,
         character: actor.character || '',
-        avatar: `https://image.tmdb.org/t/p/w500${actor.profile_path}`,
+        avatar: actor.profile_path
+          ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
+          : 'https://i.stack.imgur.com/l60Hf.png',
       })),
     };
   }

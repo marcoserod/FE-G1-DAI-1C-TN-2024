@@ -3,31 +3,55 @@ import {
   StyleSheet,
   NativeSyntheticEvent,
   TextInputSubmitEditingEventData,
+  View,
+  Pressable,
 } from 'react-native';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
 import I18n from '../../../assets/localization/i18n';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface Props {
-  onSubmit: ({
-    nativeEvent,
-  }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void;
+  onSubmit: (text: string) => void;
 }
 
 export const SearchInput = ({onSubmit}: Props) => {
+  const searchInputRef = useRef(null);
+  const [innerText, setInnerTet] = useState<string>('');
+  const handleInputSubmit = () => {
+    onSubmit(innerText);
+  };
+  const handleOnClear = () => {
+    setInnerTet('');
+    searchInputRef?.current?.focus();
+  };
   return (
-    <TextInput
-      onSubmitEditing={onSubmit}
-      style={styles.input}
-      placeholder={I18n.t('search.searchPlaceholder')}
-      placeholderTextColor={COLORS.TEXT_2}
-      inlineImageLeft="search_icon"
-      inlineImagePadding={8}
-    />
+    <View style={styles.container}>
+      <TextInput
+        ref={searchInputRef}
+        value={innerText}
+        onChangeText={text => setInnerTet(text)}
+        onSubmitEditing={handleInputSubmit}
+        style={styles.input}
+        placeholder={I18n.t('search.searchPlaceholder')}
+        placeholderTextColor={COLORS.TEXT_2}
+        inlineImageLeft="search_icon"
+        inlineImagePadding={8}
+      />
+      {innerText ? (
+        <Pressable onPress={handleOnClear} style={styles.closeBtn}>
+          <MaterialCommunityIcons name="close" color={COLORS.TEXT} size={24} />
+        </Pressable>
+      ) : null}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   input: {
     width: '100%',
     color: COLORS.TEXT,
@@ -37,5 +61,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
     marginVertical: 10,
+  },
+  closeBtn: {
+    position: 'absolute',
+    right: 16,
   },
 });

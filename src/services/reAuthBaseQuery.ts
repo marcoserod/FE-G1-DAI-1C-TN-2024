@@ -23,7 +23,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
       {
         url: '/auth/refreshToken',
         method: 'POST',
-        params: {refreshToken},
+        body: {refreshToken},
       },
       api,
       extraOptions,
@@ -37,6 +37,8 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
           refreshToken: refreshResult.data.refreshToken,
         }),
       );
+      console.log('Refresh token has worked');
+      console.log('Retrying previous query');
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logOut());

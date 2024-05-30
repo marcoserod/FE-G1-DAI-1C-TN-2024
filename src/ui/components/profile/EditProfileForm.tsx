@@ -9,7 +9,6 @@ import {useEditUserMutation} from '../../../services/user';
 import {showErrorToast, showSuccessToast} from '../commons/CustomToast';
 import {useNavigation} from '@react-navigation/native';
 import {LoadingModal} from '../commons/modal/LoadingModal';
-import axios from 'axios';
 
 export const EditProfileForm = ({user, refetch}) => {
   const {email, name, surname, nickname, id} = user;
@@ -52,7 +51,9 @@ export const EditProfileForm = ({user, refetch}) => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={styles.container}
-            keyboardShouldPersistTaps="handled">
+            keyboardShouldPersistTaps="handled"
+            automaticallyAdjustKeyboardInsets={true}
+            contentContainerStyle={styles.containerContent}>
             <LoadingModal isVisible={isLoading}> </LoadingModal>
             <FormInput
               label="Nombre"
@@ -91,7 +92,6 @@ export const EditProfileForm = ({user, refetch}) => {
             <View
               style={{
                 marginTop: 30,
-                marginBottom: 150,
                 marginHorizontal: 'auto',
               }}>
               <Button
@@ -110,9 +110,12 @@ export const EditProfileForm = ({user, refetch}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexGrow: 1,
     marginTop: 44,
     marginHorizontal: 20,
-    paddingBottom: 100,
+  },
+  containerContent: {
+    paddingBottom: 300,
   },
   errorText: {
     fontSize: 12,
