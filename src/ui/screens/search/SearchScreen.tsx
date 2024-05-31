@@ -139,7 +139,8 @@ export const SearchScreen = () => {
             )}
           />
         ) : (
-          searchValue && (
+          searchValue &&
+          !isLoading && (
             <View style={styles.noResultsView}>
               <Text style={styles.noResultsText}>
                 {I18n.t('search.noResults')}
