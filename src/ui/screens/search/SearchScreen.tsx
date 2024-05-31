@@ -139,12 +139,14 @@ export const SearchScreen = () => {
             )}
           />
         ) : (
-          <View style={styles.noResultsView}>
-            <Text style={styles.noResultsText}>
-              {I18n.t('search.noResults')}
-            </Text>
-            <Image source={IMAGES.OTHERS.NO_RESULTS} />
-          </View>
+          searchValue && (
+            <View style={styles.noResultsView}>
+              <Text style={styles.noResultsText}>
+                {I18n.t('search.noResults')}
+              </Text>
+              <Image source={IMAGES.OTHERS.NO_RESULTS} />
+            </View>
+          )
         )}
       </View>
     </FiltersDrawer>
