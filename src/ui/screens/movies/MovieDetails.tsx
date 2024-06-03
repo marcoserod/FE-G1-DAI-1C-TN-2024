@@ -112,9 +112,7 @@ const MovieDetailScreen = ({route}) => {
             </InfoTile>
           </ScrollView>
         </ImageBackground>
-      ) : (
-        <Text>Cargando...</Text>
-      )}
+      ) : null}
     </View>
   );
 };
