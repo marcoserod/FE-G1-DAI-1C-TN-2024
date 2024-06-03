@@ -3,8 +3,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  NativeSyntheticEvent,
-  TextInputSubmitEditingEventData,
   Pressable,
   FlatList,
   ActivityIndicator,
@@ -95,26 +93,26 @@ export const SearchScreen = () => {
       <LoadingModal isVisible={isLoading || manualLoading} />
       <View style={styles.container}>
         <SearchInput onSubmit={handleSearch} />
-        {!searchValue ? (
+        {!searchValue && (
           <Image style={styles.image} source={IMAGES.OTHERS.SEARCH_BG} />
-        ) : (
-          data?.movies?.length && (
-            <View style={styles.resultsAction}>
-              {count ? (
-                <Text style={styles.textResult}>{`${count} resultados`}</Text>
-              ) : null}
-              <Pressable
-                onPress={() => setFiltersVisible(prevOpen => !prevOpen)}>
-                <MaterialCommunityIcons
-                  name="filter-outline"
-                  color={filters?.length ? COLORS.PRIMARY : COLORS.TEXT}
-                  size={20}
-                />
-              </Pressable>
-            </View>
-          )
         )}
-        {searchValue && data?.movies?.length ? (
+
+        {data?.movies?.length > 0 && (
+          <View style={styles.resultsAction}>
+            {count ? (
+              <Text style={styles.textResult}>{`${count} resultados`}</Text>
+            ) : null}
+            <Pressable onPress={() => setFiltersVisible(prevOpen => !prevOpen)}>
+              <MaterialCommunityIcons
+                name="filter-outline"
+                color={filters?.length ? COLORS.PRIMARY : COLORS.TEXT}
+                size={20}
+              />
+            </Pressable>
+          </View>
+        )}
+
+        {searchValue && data?.movies?.length > 0 ? (
           <FlatList
             showsVerticalScrollIndicator={false}
             data={data?.movies}
@@ -140,7 +138,8 @@ export const SearchScreen = () => {
           />
         ) : (
           searchValue &&
-          !isLoading && (
+          !isLoading &&
+          !isFetching && (
             <View style={styles.noResultsView}>
               <Text style={styles.noResultsText}>
                 {I18n.t('search.noResults')}
