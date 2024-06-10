@@ -7,7 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
 import IMAGES from '../../../assets/images';
 import {SearchInput} from '../../components/commons/SearchInput';
@@ -33,24 +33,19 @@ export const SearchScreen = () => {
     rate: 'desc',
   });
   const [filters, setFilters] = useState([]);
+  const flatListRef = useRef(null);
+  const scrollToTop = () => {
+    flatListRef?.current?.scrollToOffset({animated: false, offset: 0});
+  };
 
   const handleSearch = async (text: string) => {
     setSearchValue(text);
     setPage(1);
-    setManualLoading(true);
     setSorting({
       date: 'desc',
       rate: 'desc',
     });
     setFilters([]);
-    await triggerSearch({
-      searchValue: text,
-      page: 1,
-      dateSort: 'desc',
-      rateSort: 'desc',
-      filters: [],
-    });
-    setManualLoading(false);
   };
 
   const loadMore = () => {
@@ -68,6 +63,7 @@ export const SearchScreen = () => {
 
   const handleFilters = async () => {
     setPage(1);
+    scrollToTop();
     setManualLoading(true);
     await triggerSearch({
       searchValue: searchValue,
@@ -83,7 +79,7 @@ export const SearchScreen = () => {
     if (searchValue) {
       handleFilters();
     }
-  }, [sorting, filters]);
+  }, [searchValue, sorting, filters]);
 
   useEffect(() => {
     if (error) {
@@ -123,6 +119,7 @@ export const SearchScreen = () => {
 
         {searchValue && data?.movies?.length > 0 ? (
           <FlatList
+            ref={flatListRef}
             showsVerticalScrollIndicator={false}
             data={data?.movies}
             keyExtractor={(item, index) => index.toString()}

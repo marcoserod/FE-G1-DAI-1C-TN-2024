@@ -11,6 +11,7 @@ import {COLORS} from '../../../constants/colors';
 import Toast, {BaseToast} from 'react-native-toast-message';
 import IMAGES from '../../../assets/images';
 import I18n from '../../../assets/localization/i18n';
+import LinearGradient from 'react-native-linear-gradient';
 
 const CloseIcon = () => {
   return (
@@ -25,7 +26,7 @@ const Actions = ({onRetry}) => {
     <View style={styles.actions}>
       {onRetry ? (
         <TouchableOpacity onPress={onRetry} style={styles.retry}>
-          <Text>{I18n.t('commons.retry')}</Text>
+          <Text style={styles.retryText}>{I18n.t('commons.retry')}</Text>
         </TouchableOpacity>
       ) : null}
       <CloseIcon />
@@ -35,89 +36,116 @@ const Actions = ({onRetry}) => {
 
 const SuccessToast = props => {
   return (
-    <BaseToast
-      {...props}
-      renderTrailingIcon={CloseIcon}
-      renderLeadingIcon={() => <IMAGES.SVG.SUCCESS />}
-      style={[styles.success, styles.commons]}
-      text1NumberOfLines={0}
-      text2NumberOfLines={2}
-      text1Style={styles.titleStyle}
-      text2Style={styles.message}
-    />
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}
+      colors={['#32BB71', COLORS.BG_2]}
+      style={styles.gradient}>
+      <BaseToast
+        {...props}
+        renderTrailingIcon={CloseIcon}
+        renderLeadingIcon={() => <IMAGES.SVG.SUCCESS />}
+        style={[styles.success, styles.commons]}
+        text1NumberOfLines={0}
+        text2NumberOfLines={2}
+        text1Style={styles.titleStyle}
+        text2Style={styles.message}
+      />
+    </LinearGradient>
   );
 };
 
 const ErrorToast = props => {
   return (
-    <BaseToast
-      {...props}
-      renderTrailingIcon={() => <Actions onRetry={props.props?.onRetry} />}
-      renderLeadingIcon={() => <IMAGES.SVG.ERROR />}
-      text1NumberOfLines={0}
-      text2NumberOfLines={2}
-      style={[styles.error, styles.commons]}
-      text1Style={styles.titleStyle}
-      text2Style={styles.message}
-    />
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}
+      colors={['#F6743E', COLORS.BG_2]}
+      style={styles.gradient}>
+      <BaseToast
+        {...props}
+        renderTrailingIcon={() => <Actions onRetry={props.props?.onRetry} />}
+        renderLeadingIcon={() => <IMAGES.SVG.ERROR />}
+        text1NumberOfLines={0}
+        text2NumberOfLines={2}
+        style={[styles.error, styles.commons]}
+        text1Style={styles.titleStyle}
+        text2Style={styles.message}
+      />
+    </LinearGradient>
   );
 };
 
 const InfoToast = props => {
   return (
-    <BaseToast
-      {...props}
-      renderTrailingIcon={CloseIcon}
-      renderLeadingIcon={() => <IMAGES.SVG.INFO />}
-      text1NumberOfLines={0}
-      text2NumberOfLines={2}
-      style={[styles.info, styles.commons]}
-      text1Style={styles.titleStyle}
-      text2Style={styles.message}
-    />
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}
+      colors={['#2D82B2', COLORS.BG_2]}
+      style={styles.gradient}>
+      <BaseToast
+        {...props}
+        renderTrailingIcon={CloseIcon}
+        renderLeadingIcon={() => <IMAGES.SVG.INFO />}
+        text1NumberOfLines={0}
+        text2NumberOfLines={2}
+        style={[styles.info, styles.commons]}
+        text1Style={styles.titleStyle}
+        text2Style={styles.message}
+      />
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+    borderRadius: 12,
+  },
   commons: {
     height: 'auto',
-    borderWidth: 2,
-    borderLeftWidth: 2,
+    elevation: 0,
+    borderWidth: 1,
+    borderLeftWidth: 1,
+    shadowRadius: 0,
     padding: 20,
+    borderRadius: 12,
+    backgroundColor: 'transparent',
   },
   success: {
-    backgroundColor: '#F6FFF9',
-    borderColor: '#48C1B5',
+    borderColor: '#43D590',
   },
   error: {
-    backgroundColor: '#FFF5F3',
     borderColor: '#F4B0A1',
   },
   info: {
-    backgroundColor: '#F5F9FF',
-    borderColor: '#9DC0EE',
+    borderColor: '#7BCFED',
   },
   titleStyle: {
     fontWeight: 600,
     fontSize: 14,
-    color: '#27303A',
+    color: COLORS.TEXT,
   },
   message: {
     fontWeight: 400,
     fontSize: 12,
-    color: '#2F3F53',
+    color: COLORS.TEXT,
   },
   actions: {
     flexDirection: 'row',
     gap: 8,
   },
   retry: {
-    backgroundColor: COLORS.TEXT,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#979FA9',
+    borderColor: COLORS.TEXT,
+  },
+  retryText: {
+    color: COLORS.TEXT,
   },
 });
 
