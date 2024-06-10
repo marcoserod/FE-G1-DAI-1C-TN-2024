@@ -17,6 +17,7 @@ export class MovieMapper {
     const {
       movie,
       movieCast: {cast},
+      genreList,
     } = result;
     return {
       id: movie.id,
@@ -25,7 +26,7 @@ export class MovieMapper {
       releaseDate: movie.release_date,
       rating: movie.vote_average,
       poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-      genres: movie.genres?.map(genre => genre.name) || [],
+      genres: genreList?.map(genre => genre.name) || [],
       duration: movie.runtime,
       subtitle: movie.tagline,
       ratingCount: movie.vote_count,

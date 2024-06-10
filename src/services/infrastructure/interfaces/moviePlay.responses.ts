@@ -15,6 +15,7 @@ export interface FullMovieResult {
   movie: Movie;
   movieTrailer: MovieTrailer;
   movieCast: MovieCast;
+  genreList: Genre[];
   imageList: ImageList;
   metadata: null;
 }
@@ -64,4 +65,9 @@ export interface Cast {
 
 export interface MovieTrailer {
   link: string;
+}
+
+interface Genre {
+  id: number;
+  name: string;
 }

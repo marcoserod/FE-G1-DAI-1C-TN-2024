@@ -31,13 +31,25 @@ export const FiltersDrawer = ({
   children,
   setSorting,
   setFilters,
+  sorting,
+  filters,
 }) => {
   const navigation = useNavigation();
 
   const {data: genres} = useGenresQuery({});
-  const [selectedDateSort, setSelectedDateSort] = useState('desc');
-  const [selectedRateSort, setSelectedRateSort] = useState('desc');
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [selectedDateSort, setSelectedDateSort] = useState(sorting.date);
+  const [selectedRateSort, setSelectedRateSort] = useState(sorting.rate);
+  if (selectedDateSort !== sorting.date && !open) {
+    setSelectedDateSort(sorting.date);
+  }
+  if (selectedRateSort !== sorting.rate && !open) {
+    setSelectedRateSort(sorting.rate);
+  }
+
+  const [selectedGenres, setSelectedGenres] = useState<number[]>(filters);
+  if (filters.length !== selectedGenres.length && !open) {
+    setSelectedGenres(filters);
+  }
 
   const options = genres?.genreList?.map(genre => ({
     id: genre.id,
@@ -115,7 +127,7 @@ export const FiltersDrawer = ({
   const handleOnApply = () => {
     setSorting({
       date: selectedDateSort,
-      rate: selectedDateSort,
+      rate: selectedRateSort,
     });
     setFilters(selectedGenres);
     handleClose();

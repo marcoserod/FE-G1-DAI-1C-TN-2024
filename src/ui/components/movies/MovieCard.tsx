@@ -12,9 +12,10 @@ interface Props {
   poster: string;
   rating: number;
   id: number;
+  releaseDate?: string;
 }
 
-export const MovieCard = ({title, poster, rating, id}: Props) => {
+export const MovieCard = ({title, poster, rating, id, releaseDate}: Props) => {
   const navigation = useNavigation();
   return (
     <Pressable
@@ -33,6 +34,9 @@ export const MovieCard = ({title, poster, rating, id}: Props) => {
         <View style={styles.ratingContainer}>
           <MaterialCommunityIcons name="star" color={COLORS.ACCENT} size={12} />
           <Text style={styles.rating}>{Formatter.rating(rating)}</Text>
+          {releaseDate ? (
+            <Text style={styles.year}>{Formatter.year(releaseDate)}</Text>
+          ) : null}
         </View>
         <Text numberOfLines={1} style={styles.title}>
           {title}
@@ -71,5 +75,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginHorizontal: 12,
     marginBottom: 6,
+  },
+  year: {
+    color: COLORS.TEXT_2,
+    fontSize: 12,
+    marginLeft: 'auto',
   },
 });

@@ -5,7 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {COLORS} from '../../../constants/colors';
 import {MovieCard} from '../../components/movies/MovieCard';
 import IMAGES from '../../../assets/images';

@@ -41,6 +41,7 @@ const SuccessToast = props => {
       renderLeadingIcon={() => <IMAGES.SVG.SUCCESS />}
       style={[styles.success, styles.commons]}
       text1NumberOfLines={0}
+      text2NumberOfLines={2}
       text1Style={styles.titleStyle}
       text2Style={styles.message}
     />
@@ -54,7 +55,23 @@ const ErrorToast = props => {
       renderTrailingIcon={() => <Actions onRetry={props.props?.onRetry} />}
       renderLeadingIcon={() => <IMAGES.SVG.ERROR />}
       text1NumberOfLines={0}
+      text2NumberOfLines={2}
       style={[styles.error, styles.commons]}
+      text1Style={styles.titleStyle}
+      text2Style={styles.message}
+    />
+  );
+};
+
+const InfoToast = props => {
+  return (
+    <BaseToast
+      {...props}
+      renderTrailingIcon={CloseIcon}
+      renderLeadingIcon={() => <IMAGES.SVG.INFO />}
+      text1NumberOfLines={0}
+      text2NumberOfLines={2}
+      style={[styles.info, styles.commons]}
       text1Style={styles.titleStyle}
       text2Style={styles.message}
     />
@@ -64,18 +81,21 @@ const ErrorToast = props => {
 const styles = StyleSheet.create({
   commons: {
     height: 'auto',
+    borderWidth: 2,
+    borderLeftWidth: 2,
+    padding: 20,
   },
   success: {
     backgroundColor: '#F6FFF9',
     borderColor: '#48C1B5',
-    borderLeftWidth: 1,
-    padding: 20,
   },
   error: {
     backgroundColor: '#FFF5F3',
     borderColor: '#F4B0A1',
-    borderLeftWidth: 1,
-    padding: 20,
+  },
+  info: {
+    backgroundColor: '#F5F9FF',
+    borderColor: '#9DC0EE',
   },
   titleStyle: {
     fontWeight: 600,
@@ -104,11 +124,22 @@ const styles = StyleSheet.create({
 const toastConfig = {
   success: props => <SuccessToast {...props} />,
   error: props => <ErrorToast {...props} />,
+  info: props => <InfoToast {...props} />,
 };
 
 const showSuccessToast = ({title = I18n.t('commons.success'), message}) => {
   Toast.show({
     type: 'success',
+    visibilityTime: 10000,
+    autoHide: true,
+    text1: title,
+    text2: message,
+  });
+};
+
+const showInfoToast = ({title = I18n.t('commons.info'), message}) => {
+  Toast.show({
+    type: 'info',
     visibilityTime: 10000,
     autoHide: true,
     text1: title,
@@ -132,4 +163,4 @@ const showErrorToast = ({
   });
 };
 
-export {toastConfig, showSuccessToast, showErrorToast};
+export {toastConfig, showSuccessToast, showErrorToast, showInfoToast};

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -20,12 +20,19 @@ import {CastActor} from '../../components/cast/CastActor';
 import {RatingTile} from '../../components/movies/RatingTile';
 import {useGetMovieByIdQuery} from '../../../services/movies';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
+import {showInfoToast} from '../../components/commons/CustomToast';
 
 const MovieDetailScreen = ({route}) => {
   const {movieId} = route.params;
-  const {data: movie, isLoading} = useGetMovieByIdQuery({movieId});
-
+  const {data: movie, isLoading, error} = useGetMovieByIdQuery({movieId});
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (error && error.status === 404) {
+      showInfoToast({message: I18n.t('movie.noInfo')});
+      navigation.goBack();
+    }
+  }, [error, navigation]);
 
   return (
     <View style={styles.container}>

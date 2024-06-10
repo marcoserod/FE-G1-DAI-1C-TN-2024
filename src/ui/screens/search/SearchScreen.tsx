@@ -38,12 +38,17 @@ export const SearchScreen = () => {
     setSearchValue(text);
     setPage(1);
     setManualLoading(true);
+    setSorting({
+      date: 'desc',
+      rate: 'desc',
+    });
+    setFilters([]);
     await triggerSearch({
       searchValue: text,
       page: 1,
-      dateSort: sorting.date,
-      rateSort: sorting.rate,
-      filters,
+      dateSort: 'desc',
+      rateSort: 'desc',
+      filters: [],
     });
     setManualLoading(false);
   };
@@ -62,6 +67,7 @@ export const SearchScreen = () => {
   };
 
   const handleFilters = async () => {
+    setPage(1);
     setManualLoading(true);
     await triggerSearch({
       searchValue: searchValue,
@@ -89,7 +95,7 @@ export const SearchScreen = () => {
     <FiltersDrawer
       open={filterVisible}
       setOpen={setFiltersVisible}
-      {...{setSorting, setFilters}}>
+      {...{setSorting, setFilters, sorting, filters}}>
       <LoadingModal isVisible={isLoading || manualLoading} />
       <View style={styles.container}>
         <SearchInput onSubmit={handleSearch} />
@@ -100,7 +106,10 @@ export const SearchScreen = () => {
         {data?.movies?.length > 0 && (
           <View style={styles.resultsAction}>
             {count ? (
-              <Text style={styles.textResult}>{`${count} resultados`}</Text>
+              <Text
+                style={
+                  styles.textResult
+                }>{`${data?.movies.length} de ${count} resultados`}</Text>
             ) : null}
             <Pressable onPress={() => setFiltersVisible(prevOpen => !prevOpen)}>
               <MaterialCommunityIcons
@@ -121,7 +130,7 @@ export const SearchScreen = () => {
             contentContainerStyle={styles.gridContainer}
             columnWrapperStyle={styles.rowContainer}
             ListFooterComponent={
-              isFetching ? (
+              isFetching && !manualLoading ? (
                 <ActivityIndicator size="large" color={COLORS.PRIMARY} />
               ) : null
             }
@@ -129,6 +138,7 @@ export const SearchScreen = () => {
             onEndReachedThreshold={0.8}
             renderItem={({item}) => (
               <MovieCard
+                releaseDate={item.releaseDate}
                 title={item.title}
                 id={item.id}
                 poster={item.poster}

@@ -36,4 +36,12 @@ export class Formatter {
   public static rating(rating: number): number {
     return parseFloat((rating / 2).toFixed(1));
   }
+
+  public static year(date: string | undefined): string {
+    if (!date) {
+      return '';
+    }
+    const newDate = new Date(date);
+    return newDate.getFullYear().toString();
+  }
 }

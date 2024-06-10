@@ -5,6 +5,7 @@ export default {
     cancel: 'Cancelar',
     retry: 'Re-intentar',
     error: 'Error',
+    info: 'Lo sentimos',
     success: 'Éxito',
     save: 'Guardar',
   },
@@ -21,6 +22,7 @@ export default {
   },
   movie: {
     cast: 'Reparto Principal',
+    noInfo: 'Aún no tenemos información de esta película',
   },
   filters: {
     timeGroup: 'Tiempo',
