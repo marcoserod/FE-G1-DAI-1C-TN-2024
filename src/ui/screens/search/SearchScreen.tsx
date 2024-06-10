@@ -99,11 +99,9 @@ export const SearchScreen = () => {
       <LoadingModal isVisible={isLoading || manualLoading} />
       <View style={styles.container}>
         <SearchInput onSubmit={handleSearch} />
-        {!searchValue && (
+        {!searchValue ? (
           <Image style={styles.image} source={IMAGES.OTHERS.SEARCH_BG} />
-        )}
-
-        {data?.movies?.length > 0 && (
+        ) : (
           <View style={styles.resultsAction}>
             {count ? (
               <Text
@@ -111,7 +109,9 @@ export const SearchScreen = () => {
                   styles.textResult
                 }>{`${data?.movies.length} de ${count} resultados`}</Text>
             ) : null}
-            <Pressable onPress={() => setFiltersVisible(prevOpen => !prevOpen)}>
+            <Pressable
+              onPress={() => setFiltersVisible(prevOpen => !prevOpen)}
+              style={{marginLeft: 'auto'}}>
               <MaterialCommunityIcons
                 name="filter-outline"
                 color={filters?.length ? COLORS.PRIMARY : COLORS.TEXT}
