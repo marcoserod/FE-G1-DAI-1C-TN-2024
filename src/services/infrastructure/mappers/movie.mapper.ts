@@ -18,6 +18,7 @@ export class MovieMapper {
       movie,
       movieCast: {cast},
       genreList,
+      movieTrailer,
     } = result;
     return {
       id: movie.id,
@@ -25,6 +26,7 @@ export class MovieMapper {
       description: movie.overview,
       releaseDate: movie.release_date,
       rating: movie.vote_average,
+      trailer: movieTrailer?.link,
       poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
       genres: genreList?.map(genre => genre.name) || [],
       duration: movie.runtime,

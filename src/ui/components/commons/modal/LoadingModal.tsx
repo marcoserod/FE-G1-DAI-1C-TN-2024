@@ -4,11 +4,16 @@ import {COLORS} from '../../../../constants/colors';
 
 export interface ModalLoadingProps {
   isVisible: boolean;
+  transparent?: boolean;
 }
-export const LoadingModal = ({isVisible}: ModalLoadingProps) => {
+export const LoadingModal = ({isVisible, transparent}: ModalLoadingProps) => {
   return (
     <Modal visible={isVisible} transparent>
-      <View style={styles.modalContainer}>
+      <View
+        style={{
+          ...styles.modalContainer,
+          ...(transparent ? {backgroundColor: 'transparent'} : {}),
+        }}>
         <ActivityIndicator size="large" color={COLORS.PRIMARY} />
       </View>
     </Modal>

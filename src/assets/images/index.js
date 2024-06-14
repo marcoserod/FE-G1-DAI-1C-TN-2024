@@ -4,6 +4,7 @@ import AppLogo from './logo/moviePlay.svg';
 import success from './icons/succes_icon.svg';
 import error from './icons/error_icon.svg';
 import info from './icons/info_icon.svg';
+import trailer from './icons/trailer_icon.svg';
 
 const IMAGES = {
   SVG: {
@@ -12,6 +13,7 @@ const IMAGES = {
     SUCCESS: success,
     ERROR: error,
     INFO: info,
+    TRAILER: trailer,
   },
   OTHERS: {
     LOGIN_BG: require('./backgrounds/loginBackground.jpg'),

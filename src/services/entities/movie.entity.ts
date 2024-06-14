@@ -10,6 +10,7 @@ export interface Movie {
 }
 
 export interface FullMovie extends Movie {
+  trailer: string;
   genres: string[];
   duration: number;
   subtitle: string;

@@ -1,4 +1,4 @@
-import {Modal, Pressable, StyleSheet} from 'react-native';
+import {Modal, Pressable, StyleSheet, View} from 'react-native';
 import React, {PropsWithChildren} from 'react';
 
 export interface ModalProps {
@@ -13,7 +13,7 @@ export const ModalWrapper = ({
   return (
     <Modal visible={isVisible} transparent>
       <Pressable style={styles.modalContainer} onPress={onClose}>
-        {children}
+        <Pressable>{children}</Pressable>
       </Pressable>
     </Modal>
   );

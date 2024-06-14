@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   Pressable,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Chip} from '../../components/commons/Chip';
@@ -21,11 +22,25 @@ import {RatingTile} from '../../components/movies/RatingTile';
 import {useGetMovieByIdQuery} from '../../../services/movies';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 import {showInfoToast} from '../../components/commons/CustomToast';
+import {
+  TrailerModal,
+  useTrailerModal,
+} from '../../components/movies/TrailerModal';
+import IMAGES from '../../../assets/images';
+
+const extractVideoId = url => {
+  const regex =
+    /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = url?.match(regex);
+  return match ? match[1] : null;
+};
 
 const MovieDetailScreen = ({route}) => {
   const {movieId} = route.params;
   const {data: movie, isLoading, error} = useGetMovieByIdQuery({movieId});
   const navigation = useNavigation();
+  const videoId = extractVideoId(movie?.trailer);
+  const {TrailerModal, handleTrailerModalVisibility} = useTrailerModal();
 
   useEffect(() => {
     if (error && error.status === 404) {
@@ -55,6 +70,7 @@ const MovieDetailScreen = ({route}) => {
             colors={['transparent', COLORS.BG]}
             style={styles.gradientOverlay}
           />
+
           <View style={styles.statusBarOverlay} />
           <ScrollView contentContainerStyle={styles.scrollContent}>
             <View style={styles.dateAndDuration}>
@@ -92,6 +108,9 @@ const MovieDetailScreen = ({route}) => {
                 totalVotes={movie?.ratingCount}
               />
               <View style={styles.actionContainerIcons}>
+                <TouchableOpacity onPress={handleTrailerModalVisibility}>
+                  <IMAGES.SVG.TRAILER height={32} width={32} />
+                </TouchableOpacity>
                 <MaterialCommunityIcons
                   name="share-variant-outline"
                   color={COLORS.ACCENT}
@@ -118,6 +137,7 @@ const MovieDetailScreen = ({route}) => {
               />
             </InfoTile>
           </ScrollView>
+          <TrailerModal videoId={videoId} />
         </ImageBackground>
       ) : null}
     </View>
