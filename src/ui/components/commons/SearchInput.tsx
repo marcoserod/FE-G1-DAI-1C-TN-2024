@@ -5,6 +5,7 @@ import {
   TextInputSubmitEditingEventData,
   View,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
@@ -39,9 +40,9 @@ export const SearchInput = ({onSubmit}: Props) => {
         inlineImagePadding={8}
       />
       {innerText ? (
-        <Pressable onPress={handleOnClear} style={styles.closeBtn}>
+        <TouchableOpacity onPress={handleOnClear} style={styles.closeBtn}>
           <MaterialCommunityIcons name="close" color={COLORS.TEXT} size={24} />
-        </Pressable>
+        </TouchableOpacity>
       ) : null}
     </View>
   );

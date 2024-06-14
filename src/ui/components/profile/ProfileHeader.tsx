@@ -1,4 +1,11 @@
-import {View, Text, Pressable, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
@@ -30,7 +37,7 @@ export const ProfileHeader = ({
     <LinearGradient colors={['#DC682E', '#762419']} style={styles.gradient}>
       <View style={styles.header}>
         {showBack ? (
-          <Pressable
+          <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
             <MaterialCommunityIcons
@@ -38,7 +45,7 @@ export const ProfileHeader = ({
               color={COLORS.TEXT}
               size={32}
             />
-          </Pressable>
+          </TouchableOpacity>
         ) : null}
         <View style={styles.userName}>
           <Text style={styles.greeting}>{`Hola ${user.name}`}</Text>
@@ -56,7 +63,7 @@ export const ProfileHeader = ({
           style={styles.profilePicture}
         />
         {isEdit ? (
-          <Pressable
+          <TouchableOpacity
             onPress={handleModalVisibility}
             style={styles.cameraButton}>
             <MaterialCommunityIcons
@@ -64,7 +71,7 @@ export const ProfileHeader = ({
               color={COLORS.TEXT}
               size={20}
             />
-          </Pressable>
+          </TouchableOpacity>
         ) : null}
       </View>
       <ChangePhotoModal

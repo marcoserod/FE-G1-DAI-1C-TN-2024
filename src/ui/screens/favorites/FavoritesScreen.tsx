@@ -13,7 +13,7 @@ export const FavoritesScreen = () => {
     <View style={styles.container}>
       <LinearGradient colors={['#DC682E', '#762419']} style={styles.gradient}>
         <View style={styles.header}>
-          <Pressable
+          <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
             <MaterialCommunityIcons
@@ -21,7 +21,7 @@ export const FavoritesScreen = () => {
               color={COLORS.TEXT}
               size={32}
             />
-          </Pressable>
+          </TouchableOpacity>
 
           <Text style={styles.textHeader}>{I18n.t('favorites.yours')}</Text>
         </View>

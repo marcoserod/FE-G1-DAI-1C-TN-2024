@@ -1,10 +1,18 @@
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import {COLORS} from '../../../constants/colors';
 import {Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Formatter} from '../../../assets/helpers/formatter';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import IMAGES from '../../../assets/images';
 const {width} = Dimensions.get('window');
 
 interface Props {
@@ -18,15 +26,14 @@ interface Props {
 export const MovieCard = ({title, poster, rating, id, releaseDate}: Props) => {
   const navigation = useNavigation();
   return (
-    <Pressable
-      onPress={() => navigation.navigate('MovieDetails', {movieId: id})}
-      style={({pressed}) => ({
-        opacity: pressed ? 0.9 : 1,
-      })}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('MovieDetails', {movieId: id})}>
       <View style={styles.card}>
         <Image
           style={styles.poster}
-          source={{uri: poster}}
+          source={
+            !poster?.includes('null') ? {uri: poster} : IMAGES.OTHERS.LOGO
+          }
           onError={e =>
             console.error('Error loading image:', e.nativeEvent.error)
           }
@@ -42,7 +49,7 @@ export const MovieCard = ({title, poster, rating, id, releaseDate}: Props) => {
           {title}
         </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../constants/colors';
@@ -15,9 +9,9 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const CloseIcon = () => {
   return (
-    <Pressable onPress={() => Toast.hide()}>
+    <TouchableOpacity onPress={() => Toast.hide()}>
       <MaterialCommunityIcons name="close" color={'#979FA9'} size={24} />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

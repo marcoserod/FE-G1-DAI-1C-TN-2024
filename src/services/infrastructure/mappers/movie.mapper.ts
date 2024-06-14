@@ -16,7 +16,7 @@ export class MovieMapper {
   static fromMoviePlayToEntity(result: FullMovieResult): FullMovie {
     const {
       movie,
-      movieCast: {cast},
+      movieCast: {cast, crew},
       genreList,
       movieTrailer,
     } = result;
@@ -40,6 +40,21 @@ export class MovieMapper {
           ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
           : 'https://i.stack.imgur.com/l60Hf.png',
       })),
+      direction: crew
+        ?.map(actor => {
+          if (actor.job === 'Director') {
+            return {
+              id: actor.id,
+              name: actor.name,
+              character: actor.character || '',
+              avatar: actor.profile_path
+                ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
+                : 'https://i.stack.imgur.com/l60Hf.png',
+            };
+          }
+          return;
+        })
+        .filter(actor => actor),
     };
   }
 }

@@ -6,6 +6,7 @@ import {
   Pressable,
   FlatList,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
@@ -105,7 +106,7 @@ export const SearchScreen = () => {
                   styles.textResult
                 }>{`${data?.movies.length} de ${count} resultados`}</Text>
             ) : null}
-            <Pressable
+            <TouchableOpacity
               onPress={() => setFiltersVisible(prevOpen => !prevOpen)}
               style={{marginLeft: 'auto'}}>
               <MaterialCommunityIcons
@@ -113,7 +114,7 @@ export const SearchScreen = () => {
                 color={filters?.length ? COLORS.PRIMARY : COLORS.TEXT}
                 size={20}
               />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         )}
 

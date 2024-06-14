@@ -1,4 +1,10 @@
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState} from 'react';
 import {Button} from '../commons/Button';
 import I18n from '../../../assets/localization/i18n';
@@ -12,12 +18,6 @@ import {LoadingModal} from '../commons/modal/LoadingModal';
 import {logOut} from '../../../store/authSlice';
 import {showErrorToast, showSuccessToast} from '../commons/CustomToast';
 import {useDeleteUserMutation} from '../../../services/user';
-
-const handlePressableStyle = ({pressed}) => [
-  {
-    backgroundColor: pressed ? `${COLORS.BG_3}20` : COLORS.BG,
-  },
-];
 
 const logoutModalData = {
   modalMessage: I18n.t('logout.message'),
@@ -95,9 +95,7 @@ export const ProfileContent = () => {
       <View style={{...styles.menuHeader, marginTop: 16}}>
         <Text style={styles.menuHeaderText}>{I18n.t('profile.content')}</Text>
       </View>
-      <Pressable
-        style={handlePressableStyle}
-        onPress={() => navigation.navigate('Favorites')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
         <View style={styles.menuItem}>
           <MaterialCommunityIcons
             name="heart-outline"
@@ -106,17 +104,17 @@ export const ProfileContent = () => {
           />
           <Text style={styles.menuItemText}>{I18n.t('profile.favorites')}</Text>
         </View>
-      </Pressable>
+      </TouchableOpacity>
       <View style={styles.menuHeader}>
         <Text style={styles.menuHeaderText}>{I18n.t('profile.session')}</Text>
       </View>
-      <Pressable style={handlePressableStyle} onPress={handleOnLogout}>
+      <TouchableOpacity onPress={handleOnLogout}>
         <View style={styles.menuItem}>
           <MaterialCommunityIcons name="logout" color={COLORS.TEXT} size={16} />
           <Text style={styles.menuItemText}>{I18n.t('profile.logout')}</Text>
         </View>
-      </Pressable>
-      <Pressable style={handlePressableStyle} onPress={handleOnDelete}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleOnDelete}>
         <View style={styles.menuItem}>
           <MaterialCommunityIcons
             name="trash-can-outline"
@@ -127,7 +125,7 @@ export const ProfileContent = () => {
             {I18n.t('profile.delete')}
           </Text>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -18,6 +18,7 @@ const IMAGES = {
   OTHERS: {
     LOGIN_BG: require('./backgrounds/loginBackground.jpg'),
     LOGO_NAME: require('./logo/moviePlayLogoName.png'),
+    LOGO: require('./logo/moviePlayLogo.png'),
     SEARCH_BG: require('./backgrounds/search.png'),
     NO_CONNECTION_BG: require('./backgrounds/noConnection.png'),
     NO_RESULTS: require('./backgrounds/noResults.png'),

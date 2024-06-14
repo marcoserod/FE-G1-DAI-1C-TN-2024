@@ -1,10 +1,10 @@
 import {
   View,
   Text,
-  Pressable,
   StyleSheet,
   Dimensions,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useMemo, useState} from 'react';
 import {Drawer} from 'react-native-drawer-layout';
@@ -160,13 +160,13 @@ export const FiltersDrawer = ({
         return (
           <View style={{width: windowWidth * 0.85, ...styles.drawerContainer}}>
             <View style={styles.topActions}>
-              <Pressable onPress={handleClose}>
+              <TouchableOpacity onPress={handleClose}>
                 <MaterialCommunityIcons
                   name="close"
                   color={COLORS.TEXT}
                   size={24}
                 />
-              </Pressable>
+              </TouchableOpacity>
             </View>
             <ScrollView>
               <AccordionItem title={'Ordenar por'} defaultExpanded={true}>

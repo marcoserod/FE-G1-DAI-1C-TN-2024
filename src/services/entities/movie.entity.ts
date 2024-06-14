@@ -16,4 +16,5 @@ export interface FullMovie extends Movie {
   subtitle: string;
   ratingCount: number;
   cast: Cast[];
+  direction: Cast[];
 }
