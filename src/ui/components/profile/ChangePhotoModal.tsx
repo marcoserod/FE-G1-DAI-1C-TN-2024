@@ -39,7 +39,7 @@ export const ChangePhotoModal = ({isVisible, onClose}: ModalProps) => {
     };
 
     try {
-      await editUser({userId, payload});
+      await editUser({userId, payload}).unwrap();
       showSuccessToast({message: I18n.t('profile.editProfileSuccess')});
       await refetch();
       navigation.navigate('Profile');

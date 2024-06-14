@@ -24,12 +24,14 @@ export const EditProfileForm = ({user, refetch}) => {
   const handleFormSubmit = async values => {
     const payload = {userData: values};
     try {
-      await editUser({userId: id, payload});
+      console.log('Vamos a actualziar con el mismo nickname');
+      const response = await editUser({userId: id, payload}).unwrap();
+      console.log('Dio success', 'la respuesta:', response);
       showSuccessToast({message: I18n.t('profile.editProfileSuccess')});
       refetch();
       navigation.navigate('Profile');
     } catch (error) {
-      showErrorToast({message: error.message});
+      showErrorToast({message: error?.data?.message, onRetry: null});
     }
   };
 

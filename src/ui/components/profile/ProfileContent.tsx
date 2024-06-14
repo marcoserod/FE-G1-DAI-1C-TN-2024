@@ -36,7 +36,7 @@ export const ProfileContent = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutMutation(refreshToken);
+      await logoutMutation(refreshToken).unwrap();
       dispatch(logOut());
       showSuccessToast({message: I18n.t('profile.logoutSuccess')});
     } catch (error) {
@@ -49,7 +49,7 @@ export const ProfileContent = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteMutation({userId});
+      await deleteMutation({userId}).unwrap();
       dispatch(logOut());
       showSuccessToast({message: I18n.t('profile.deleteSuccess')});
     } catch (error) {
