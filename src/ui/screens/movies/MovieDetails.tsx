@@ -5,9 +5,10 @@ import {
   Text,
   ImageBackground,
   ScrollView,
-  Pressable,
   FlatList,
   TouchableOpacity,
+  Dimensions,
+  Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Chip} from '../../components/commons/Chip';
@@ -16,7 +17,7 @@ import {COLORS} from '../../../constants/colors';
 import I18n from '../../../assets/localization/i18n';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
-import {InfoTile} from '../../components/movies/InfoTile';
+import {InfoTabs, InfoTile} from '../../components/movies/InfoTile';
 import {CastActor} from '../../components/cast/CastActor';
 import {RatingTile} from '../../components/movies/RatingTile';
 import {useGetMovieByIdQuery} from '../../../services/movies';
@@ -27,6 +28,8 @@ import {TrailerVideo} from '../../components/movies/TrailerVideo';
 
 import Share from 'react-native-share';
 import IMAGES from '../../../assets/images';
+import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
+import {useImageGallery} from '../../components/movies/ImageGallery';
 
 const extractVideoId = url => {
   const regex =
@@ -42,7 +45,17 @@ const MovieDetailScreen = ({route}) => {
   const videoId = extractVideoId(movie?.trailer);
   const [shareLoading, setShareLoading] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
+  const tabRoutes = [
+    {key: 'cast', title: I18n.t('movie.cast')},
+    {key: 'direction', title: I18n.t('movie.direction')},
+  ];
+  const mediaTabRoutes = [
+    {key: 'trailer', title: I18n.t('movie.trailer')},
+    {key: 'images', title: I18n.t('movie.images')},
+  ];
+  const {ImageGallery, openImageViewer} = useImageGallery();
 
+  console.log(movie?.images);
   const convertToBase64 = async url => {
     setShareLoading(true);
     return new Promise((resolve, reject) => {
@@ -85,13 +98,66 @@ const MovieDetailScreen = ({route}) => {
     }
   };
 
+  const Cast = () => (
+    <FlatList
+      data={movie?.cast}
+      keyExtractor={item => item.id.toString()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      renderItem={({item}) => <CastActor actor={item} />}
+    />
+  );
+
+  const Direction = () => (
+    <FlatList
+      data={movie?.direction}
+      keyExtractor={item => item.id.toString()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      renderItem={({item}) => <CastActor actor={item} />}
+    />
+  );
+
+  const renderScene = SceneMap({
+    cast: Cast,
+    direction: Direction,
+  });
+
+  const Trailer = () => <TrailerVideo videoId={videoId} />;
+  const Images = () => (
+    <FlatList
+      data={movie?.images || []}
+      keyExtractor={(item, index) => index.toString()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      renderItem={({item, index}) => (
+        <TouchableOpacity onPress={() => openImageViewer(index)}>
+          <Image
+            source={{uri: item}}
+            style={{
+              marginTop: 16,
+              marginRight: 10,
+              width: 100,
+              height: 150,
+              borderRadius: 10,
+            }}
+          />
+        </TouchableOpacity>
+      )}
+    />
+  );
+
+  const renderMediaScene = SceneMap({
+    trailer: Trailer,
+    images: Images,
+  });
+
   useEffect(() => {
     if (error && error.status === 404) {
       showInfoToast({message: I18n.t('movie.noInfo')});
       navigation.goBack();
     }
   }, [error, navigation]);
-
   return (
     <View style={styles.container}>
       <View style={styles.backButton}>
@@ -172,11 +238,19 @@ const MovieDetailScreen = ({route}) => {
                 />
               </View>
             </View>
+
             <InfoTile title={movie?.title || ''}>
               <Text style={styles.movieSubtitle}>{movie?.subtitle}</Text>
               <Text style={styles.movieOverview}>{movie?.description}</Text>
             </InfoTile>
-            <InfoTile title={I18n.t('movie.cast')}>
+
+            <InfoTabs tabRoutes={tabRoutes} renderScene={renderScene} />
+            <InfoTabs
+              tabRoutes={mediaTabRoutes}
+              renderScene={renderMediaScene}
+            />
+
+            {/*       <InfoTile title={I18n.t('movie.cast')}>
               <FlatList
                 data={movie?.cast}
                 keyExtractor={item => item.id.toString()}
@@ -193,7 +267,8 @@ const MovieDetailScreen = ({route}) => {
                 showsHorizontalScrollIndicator={false}
                 renderItem={({item}) => <CastActor actor={item} />}
               />
-            </InfoTile>
+            </InfoTile> */}
+            {movie?.images ? <ImageGallery images={movie?.images} /> : null}
             <InfoTile title={I18n.t('movie.trailer')}>
               <TrailerVideo videoId={videoId} />
             </InfoTile>

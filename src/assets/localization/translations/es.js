@@ -24,6 +24,7 @@ export default {
     cast: 'Reparto Principal',
     direction: 'Dirección',
     trailer: 'Trailer',
+    images: 'Imágenes',
     noInfo: 'Aún no tenemos información de esta película',
   },
   filters: {

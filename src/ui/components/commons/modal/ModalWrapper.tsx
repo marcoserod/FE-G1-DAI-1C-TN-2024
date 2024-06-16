@@ -3,6 +3,7 @@ import {
   Pressable,
   StyleSheet,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import React, {PropsWithChildren} from 'react';
 
@@ -18,7 +19,9 @@ export const ModalWrapper = ({
   return (
     <Modal visible={isVisible} transparent onRequestClose={onClose}>
       <Pressable style={styles.modalContainer} onPress={onClose}>
-        <TouchableWithoutFeedback>{children}</TouchableWithoutFeedback>
+        <TouchableWithoutFeedback>
+          <View>{children}</View>
+        </TouchableWithoutFeedback>
       </Pressable>
     </Modal>
   );

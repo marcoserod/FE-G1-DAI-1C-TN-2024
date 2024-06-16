@@ -19,6 +19,7 @@ export class MovieMapper {
       movieCast: {cast, crew},
       genreList,
       movieTrailer,
+      imageList,
     } = result;
     return {
       id: movie.id,
@@ -40,6 +41,9 @@ export class MovieMapper {
           ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
           : 'https://i.stack.imgur.com/l60Hf.png',
       })),
+      images: imageList?.images?.map(
+        image => `https://image.tmdb.org/t/p/w500${image.file_path}`,
+      ),
       direction: crew
         ?.map(actor => {
           if (actor.job === 'Director') {

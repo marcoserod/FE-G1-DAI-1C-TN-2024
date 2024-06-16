@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import {ProfileHeader} from '../../components/profile/ProfileHeader';
 
@@ -10,9 +10,10 @@ import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 export const EditProfileScreen = () => {
   const userId = useSelector(state => state?.userSession?.userId);
-  const {data, isLoading, refetch} = useGetUserByIdQuery({userId});
+  const {data, isLoading, refetch, error} = useGetUserByIdQuery({userId});
   const user = data;
-  if (isLoading) {
+  console.log(data, error);
+  if (isLoading && !error) {
     return <LoadingModal isVisible />;
   }
 

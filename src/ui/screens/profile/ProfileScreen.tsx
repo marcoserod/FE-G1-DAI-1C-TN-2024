@@ -10,9 +10,10 @@ import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 
 export const ProfileScreen = () => {
   const userId = useSelector(state => state?.userSession?.userId);
-  const {data, isLoading} = useGetUserByIdQuery({userId});
+  console.log(userId);
+  const {data, isLoading, error} = useGetUserByIdQuery({userId});
   const user = data;
-  if (isLoading) {
+  if (isLoading && !error) {
     return <LoadingModal isVisible />;
   }
 

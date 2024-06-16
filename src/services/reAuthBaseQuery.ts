@@ -16,6 +16,16 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log('Api', api?.endpoint);
+  console.log('args', args);
+
+  if (
+    api?.endpoint === 'getUserById' &&
+    // Asked BE to change status code to 404
+    result?.error?.data?.message?.includes('not found')
+  ) {
+    api.dispatch(logOut());
+  }
 
   if (result.error && result.error.status === 401) {
     const refreshToken = api.getState().userSession.refreshToken;
