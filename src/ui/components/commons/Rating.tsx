@@ -6,13 +6,13 @@ const Rating = ({
   total = 5,
   initialRating = 0,
   readOnly = false,
-  onRating = () => {},
+  onRating = (value: number) => console.log(value),
   size = 24,
   spacing = 4,
 }) => {
   const [rating, setRating] = React.useState(initialRating);
 
-  const handleRating = rate => {
+  const handleRating = (rate: number) => {
     setRating(rate);
     if (onRating) {
       onRating(rate);

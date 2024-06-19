@@ -5,6 +5,7 @@ import success from './icons/succes_icon.svg';
 import error from './icons/error_icon.svg';
 import info from './icons/info_icon.svg';
 import trailer from './icons/trailer_icon.svg';
+import rate from './icons/rate_icon.svg';
 
 const IMAGES = {
   SVG: {
@@ -14,6 +15,7 @@ const IMAGES = {
     ERROR: error,
     INFO: info,
     TRAILER: trailer,
+    RATE: rate,
   },
   OTHERS: {
     LOGIN_BG: require('./backgrounds/loginBackground.jpg'),

@@ -72,4 +72,7 @@ export default {
     ups: '¡UPS!',
     message: 'Parece que no tienes conexión.',
   },
+  rating: {
+    title: 'Tu calificación',
+  },
 };

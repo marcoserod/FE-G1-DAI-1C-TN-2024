@@ -7,7 +7,6 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
-  Dimensions,
   Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -28,8 +27,9 @@ import {TrailerVideo} from '../../components/movies/TrailerVideo';
 
 import Share from 'react-native-share';
 import IMAGES from '../../../assets/images';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
+import {SceneMap} from 'react-native-tab-view';
 import {useImageGallery} from '../../components/movies/ImageGallery';
+import {RatingModal, useRatingModal} from '../../components/movies/RatingModal';
 
 const extractVideoId = url => {
   const regex =
@@ -54,6 +54,8 @@ const MovieDetailScreen = ({route}) => {
     {key: 'images', title: I18n.t('movie.images')},
   ];
   const {ImageGallery, openImageViewer} = useImageGallery();
+  const {rating, onRating, isConfirmVisible, handleModalVisibility} =
+    useRatingModal();
 
   console.log(movie?.images);
   const convertToBase64 = async url => {
@@ -98,6 +100,11 @@ const MovieDetailScreen = ({route}) => {
     }
   };
 
+  const handleRateSubmit = () => {
+    // Tu lógica de confirmación aquí
+    handleModalVisibility();
+  };
+
   const Cast = () => (
     <FlatList
       data={movie?.cast}
@@ -127,7 +134,7 @@ const MovieDetailScreen = ({route}) => {
   const Images = () => (
     <FlatList
       data={movie?.images || []}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={item => item}
       horizontal
       showsHorizontalScrollIndicator={false}
       renderItem={({item, index}) => (
@@ -222,6 +229,9 @@ const MovieDetailScreen = ({route}) => {
                 totalVotes={movie?.ratingCount}
               />
               <View style={styles.actionContainerIcons}>
+                <TouchableOpacity onPress={handleModalVisibility}>
+                  <IMAGES.SVG.RATE height={32} width={32} />
+                </TouchableOpacity>
                 {posterLoaded ? (
                   <TouchableOpacity onPress={share}>
                     <MaterialCommunityIcons
@@ -268,10 +278,19 @@ const MovieDetailScreen = ({route}) => {
                 renderItem={({item}) => <CastActor actor={item} />}
               />
             </InfoTile> */}
+            <RatingModal
+              initialRating={rating}
+              onRating={onRating}
+              onConfirm={handleRateSubmit}
+              handleModalVisibility={handleModalVisibility}
+              isConfirmVisible={isConfirmVisible}
+              confirmDisabled={rating === 0}
+            />
             {movie?.images ? <ImageGallery images={movie?.images} /> : null}
-            <InfoTile title={I18n.t('movie.trailer')}>
+
+            {/* <InfoTile title={I18n.t('movie.trailer')}>
               <TrailerVideo videoId={videoId} />
-            </InfoTile>
+            </InfoTile> */}
           </ScrollView>
         </ImageBackground>
       ) : null}

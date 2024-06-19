@@ -4,8 +4,15 @@ import ImageView from 'react-native-image-viewing';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../constants/colors';
 
-const ImageGallery = ({images, currentIndex, visible, setVisible}) => {
-  const HeaderComponent = ({imageIndex}) => (
+interface Props {
+  images: string[];
+  currentIndex: number;
+  visible: boolean;
+  setVisible: (value: boolean) => void;
+}
+const ImageGallery = ({images, currentIndex, visible, setVisible}: Props) => {
+  // eslint-disable-next-line react/no-unstable-nested-components
+  const HeaderComponent = ({imageIndex}: {imageIndex: number}) => (
     <View style={styles.header}>
       <TouchableOpacity onPress={() => setVisible(false)}>
         <MaterialCommunityIcons name="close" color={COLORS.TEXT} size={24} />
@@ -17,11 +24,12 @@ const ImageGallery = ({images, currentIndex, visible, setVisible}) => {
   );
   return (
     <ImageView
-      images={images.map(image => ({uri: image}))}
+      images={images.map((image: string) => ({uri: image}))}
       imageIndex={currentIndex}
       visible={visible}
       onRequestClose={() => setVisible(false)}
       HeaderComponent={HeaderComponent}
+      presentationStyle="overFullScreen"
     />
   );
 };
@@ -30,12 +38,12 @@ export const useImageGallery = () => {
   const [visible, setVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const openImageViewer = index => {
+  const openImageViewer = (index: number) => {
     setCurrentIndex(index);
     setVisible(true);
   };
   return {
-    ImageGallery: ({images}) => (
+    ImageGallery: ({images}: Props) => (
       <ImageGallery {...{images, currentIndex, visible, setVisible}} />
     ),
     openImageViewer,
