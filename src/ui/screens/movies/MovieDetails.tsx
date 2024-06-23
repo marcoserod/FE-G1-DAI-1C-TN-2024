@@ -339,7 +339,7 @@ const MovieDetailScreen = ({route}) => {
               />
             </InfoTile> */}
             <RatingModal
-              initialRating={movie?.userRating || rating}
+              initialRating={movie?.userRating || 0}
               onRating={onRating}
               onConfirm={handleRateSubmit}
               handleModalVisibility={handleModalVisibility}
