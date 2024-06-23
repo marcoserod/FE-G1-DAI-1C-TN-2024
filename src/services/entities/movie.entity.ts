@@ -9,12 +9,22 @@ export interface Movie {
   poster: string;
 }
 
+export interface FavoriteMovie {
+  id: number;
+  title: string;
+  year: Date;
+  description: string;
+  poster: string;
+}
+
 export interface FullMovie extends Movie {
   trailer: string;
   genres: string[];
   duration: number;
   subtitle: string;
   ratingCount: number;
+  userRating: number | null;
+  isUserFavorite: boolean;
   cast: Cast[];
   direction: Cast[];
   images: string[];

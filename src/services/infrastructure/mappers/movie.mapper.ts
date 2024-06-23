@@ -1,4 +1,5 @@
-import {FullMovie, Movie} from '../../entities/movie.entity';
+import {Formatter} from '../../../assets/helpers/formatter';
+import {FavoriteMovie, FullMovie, Movie} from '../../entities/movie.entity';
 import {FullMovieResult, Result} from '../interfaces/moviePlay.responses';
 
 export class MovieMapper {
@@ -13,6 +14,16 @@ export class MovieMapper {
     };
   }
 
+  static fromMoviePlayResultToFavorite(result: Result): FavoriteMovie {
+    return {
+      id: result.id,
+      title: result.title,
+      year: Formatter.year(result?.release_date),
+      poster: `https://image.tmdb.org/t/p/w500${result.poster_path}`,
+      description: result.overview,
+    };
+  }
+
   static fromMoviePlayToEntity(result: FullMovieResult): FullMovie {
     const {
       movie,
@@ -20,6 +31,8 @@ export class MovieMapper {
       genreList,
       movieTrailer,
       imageList,
+      userRating,
+      isUserFavorite,
     } = result;
     return {
       id: movie.id,
@@ -33,6 +46,8 @@ export class MovieMapper {
       duration: movie.runtime,
       subtitle: movie.tagline,
       ratingCount: movie.vote_count,
+      userRating,
+      isUserFavorite,
       cast: cast?.map(actor => ({
         id: actor.id,
         name: actor.name,

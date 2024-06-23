@@ -1,6 +1,7 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import baseQueryWithReAuth from './reAuthBaseQuery';
 import {User} from './entities/user.entity';
+import {MovieMapper} from './infrastructure/mappers/movie.mapper';
 
 export const usersApi = createApi({
   reducerPath: 'users',
@@ -36,8 +37,54 @@ export const usersApi = createApi({
         method: 'DELETE',
       }),
     }),
+    getFavorites: builder.query({
+      query: ({userId, page}) => ({
+        url: `/users/${userId}/favorites`,
+        params: {
+          page,
+        },
+      }),
+      transformResponse: response => ({
+        movies: response.movies?.map(MovieMapper.fromMoviePlayResultToFavorite),
+        totalRecords: response.metadata?.totalRecords,
+        totalPages: response.metadata?.totalPages,
+        currentPage: response.metadata?.currentPage,
+      }),
+      serializeQueryArgs: ({endpointName}) => {
+        return endpointName;
+      },
+      merge: (currentCache, newItems, {arg}) => {
+        if (arg.page === 1) {
+          return newItems;
+        } else {
+          currentCache.movies.push(...newItems.movies);
+        }
+      },
+      forceRefetch({currentArg, previousArg}) {
+        return currentArg !== previousArg;
+      },
+    }),
+    addFavorite: builder.mutation({
+      query: ({userId, movieId}) => ({
+        url: `/users/${userId}/favorites/${movieId}`,
+        method: 'POST',
+      }),
+    }),
+    removeFavorite: builder.mutation({
+      query: ({userId, movieId}) => ({
+        url: `/users/${userId}/favorites/${movieId}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-export const {useGetUserByIdQuery, useEditUserMutation, useDeleteUserMutation} =
-  usersApi;
+export const {
+  useGetUserByIdQuery,
+  useEditUserMutation,
+  useDeleteUserMutation,
+  useAddFavoriteMutation,
+  useGetFavoritesQuery,
+  useRemoveFavoriteMutation,
+  useLazyGetFavoritesQuery,
+} = usersApi;

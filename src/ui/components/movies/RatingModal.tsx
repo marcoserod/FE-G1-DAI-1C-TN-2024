@@ -11,7 +11,6 @@ interface Props {
   onConfirm: () => void;
   handleModalVisibility: () => void;
   isConfirmVisible: boolean;
-  confirmDisabled: boolean;
 }
 
 export const RatingModal = ({
@@ -20,7 +19,6 @@ export const RatingModal = ({
   onConfirm,
   handleModalVisibility,
   isConfirmVisible,
-  confirmDisabled,
 }: Props) => {
   const [rating, setRating] = useState(initialRating);
 
@@ -30,7 +28,7 @@ export const RatingModal = ({
   };
 
   const handleClose = () => {
-    setRating(0);
+    setRating(initialRating);
     handleModalVisibility();
   };
 
@@ -40,7 +38,7 @@ export const RatingModal = ({
       onConfirm={onConfirm}
       onClose={handleClose}
       isVisible={isConfirmVisible}
-      confirmDisabled={confirmDisabled}>
+      confirmDisabled={rating === initialRating}>
       <View style={styles.container}>
         <Rating initialRating={rating} size={36} onRating={handleRating} />
       </View>

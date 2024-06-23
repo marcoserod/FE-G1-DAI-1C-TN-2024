@@ -72,6 +72,15 @@ export const moviesApi = createApi({
         return currentArg !== previousArg;
       },
     }),
+    rate: builder.mutation({
+      query: ({movieId, rating}) => ({
+        url: `/movies/${movieId}/ratings`,
+        method: 'POST',
+        body: {
+          rating,
+        },
+      }),
+    }),
   }),
 });
 
@@ -80,4 +89,5 @@ export const {
   useGenresQuery,
   useLazySearchQuery,
   useGetMovieByIdQuery,
+  useRateMutation,
 } = moviesApi;

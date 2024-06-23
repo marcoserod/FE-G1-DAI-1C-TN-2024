@@ -29,7 +29,7 @@ const ImageGallery = ({images, currentIndex, visible, setVisible}: Props) => {
       visible={visible}
       onRequestClose={() => setVisible(false)}
       HeaderComponent={HeaderComponent}
-      presentationStyle="overFullScreen"
+      presentationStyle="fullScreen"
     />
   );
 };

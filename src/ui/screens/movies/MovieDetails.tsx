@@ -19,9 +19,12 @@ import {useNavigation} from '@react-navigation/native';
 import {InfoTabs, InfoTile} from '../../components/movies/InfoTile';
 import {CastActor} from '../../components/cast/CastActor';
 import {RatingTile} from '../../components/movies/RatingTile';
-import {useGetMovieByIdQuery} from '../../../services/movies';
+import {useGetMovieByIdQuery, useRateMutation} from '../../../services/movies';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
-import {showInfoToast} from '../../components/commons/CustomToast';
+import {
+  showErrorToast,
+  showInfoToast,
+} from '../../components/commons/CustomToast';
 
 import {TrailerVideo} from '../../components/movies/TrailerVideo';
 
@@ -30,6 +33,8 @@ import IMAGES from '../../../assets/images';
 import {SceneMap} from 'react-native-tab-view';
 import {useImageGallery} from '../../components/movies/ImageGallery';
 import {RatingModal, useRatingModal} from '../../components/movies/RatingModal';
+import {useHandleFavorites} from '../../components/favorites/useHandleFavorites';
+import {ConfirmModal} from '../../components/commons/ConfirmModal';
 
 const extractVideoId = url => {
   const regex =
@@ -38,11 +43,47 @@ const extractVideoId = url => {
   return match ? match[1] : null;
 };
 
+const convertToBase64 = async url => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        const base64Data = reader?.result?.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = function (error) {
+        reject(error);
+      };
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.onerror = function (error) {
+      reject(error);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  });
+};
+
 const MovieDetailScreen = ({route}) => {
   const {movieId} = route.params;
-  const {data: movie, isLoading, error} = useGetMovieByIdQuery({movieId});
+  const {
+    data: movie,
+    isLoading,
+    error,
+    refetch,
+  } = useGetMovieByIdQuery({movieId});
+  const [rateMovie, {isLoading: isRateLoading}] = useRateMutation();
+  const {
+    handleAddFavorite,
+    /*  handleRemoveFavorite, */
+    isAddFavoriteLoading,
+    /* isRemoveFavoriteLoading, */
+  } = useHandleFavorites();
   const navigation = useNavigation();
   const videoId = extractVideoId(movie?.trailer);
+  const isFavorite = movie?.isUserFavorite;
   const [shareLoading, setShareLoading] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
   const tabRoutes = [
@@ -56,33 +97,15 @@ const MovieDetailScreen = ({route}) => {
   const {ImageGallery, openImageViewer} = useImageGallery();
   const {rating, onRating, isConfirmVisible, handleModalVisibility} =
     useRatingModal();
-
-  console.log(movie?.images);
-  const convertToBase64 = async url => {
-    setShareLoading(true);
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        const reader = new FileReader();
-        reader.onloadend = function () {
-          const base64Data = reader?.result?.split(',')[1];
-          resolve(base64Data);
-        };
-        reader.onerror = function (error) {
-          reject(error);
-        };
-        reader.readAsDataURL(xhr.response);
-      };
-      xhr.onerror = function (error) {
-        reject(error);
-      };
-      xhr.open('GET', url);
-      xhr.responseType = 'blob';
-      xhr.send();
-    });
-  };
+  const {
+    isConfirmVisible: isRemoveFavoriteVisible,
+    handleModalVisibility: handleRemoveModalVisibility,
+    handleRemoveFavorite,
+    isRemoveFavoriteLoading,
+  } = useHandleFavorites();
 
   const share = async () => {
+    setShareLoading(true);
     try {
       const base64Image = await convertToBase64(movie?.poster);
       const dataUrl = `data:image/jpeg;base64,${base64Image}`;
@@ -100,9 +123,26 @@ const MovieDetailScreen = ({route}) => {
     }
   };
 
-  const handleRateSubmit = () => {
-    // Tu lógica de confirmación aquí
-    handleModalVisibility();
+  const handleRateSubmit = async () => {
+    try {
+      await rateMovie({movieId, rating}).unwrap();
+      showInfoToast({
+        title: I18n.t('rating.success'),
+        message: I18n.t('rating.message'),
+      });
+      handleModalVisibility();
+    } catch (error) {
+      console.log(error);
+      showErrorToast({message: error?.data?.message});
+    }
+  };
+
+  const onFavoritePress = () => {
+    if (isFavorite) {
+      handleRemoveModalVisibility();
+      return;
+    }
+    handleAddFavorite({movieId, onSuccessCallback: refetch});
   };
 
   const Cast = () => (
@@ -165,6 +205,8 @@ const MovieDetailScreen = ({route}) => {
       navigation.goBack();
     }
   }, [error, navigation]);
+
+  console.log(movie?.images);
   return (
     <View style={styles.container}>
       <View style={styles.backButton}>
@@ -176,7 +218,23 @@ const MovieDetailScreen = ({route}) => {
           />
         </TouchableOpacity>
       </View>
-      <LoadingModal isVisible={isLoading || shareLoading} />
+      <LoadingModal
+        isVisible={
+          isLoading ||
+          shareLoading ||
+          isAddFavoriteLoading ||
+          isRateLoading ||
+          isRemoveFavoriteLoading
+        }
+      />
+      <ConfirmModal
+        message={I18n.t('favorites.removeMessage')}
+        isVisible={isRemoveFavoriteVisible}
+        onClose={handleRemoveModalVisibility}
+        onConfirm={() =>
+          handleRemoveFavorite({movieId, onSuccessCallback: refetch})
+        }
+      />
       {!isLoading ? (
         <ImageBackground
           onLoad={() => setPosterLoaded(true)}
@@ -241,11 +299,13 @@ const MovieDetailScreen = ({route}) => {
                     />
                   </TouchableOpacity>
                 ) : null}
-                <MaterialCommunityIcons
-                  name="cards-heart-outline"
-                  color={COLORS.ACCENT}
-                  size={32}
-                />
+                <TouchableOpacity onPress={onFavoritePress}>
+                  <MaterialCommunityIcons
+                    name={isFavorite ? 'cards-heart' : 'cards-heart-outline'}
+                    color={COLORS.ACCENT}
+                    size={32}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -279,12 +339,11 @@ const MovieDetailScreen = ({route}) => {
               />
             </InfoTile> */}
             <RatingModal
-              initialRating={rating}
+              initialRating={movie?.userRating || rating}
               onRating={onRating}
               onConfirm={handleRateSubmit}
               handleModalVisibility={handleModalVisibility}
               isConfirmVisible={isConfirmVisible}
-              confirmDisabled={rating === 0}
             />
             {movie?.images ? <ImageGallery images={movie?.images} /> : null}
 

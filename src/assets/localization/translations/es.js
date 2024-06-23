@@ -60,13 +60,19 @@ export default {
   },
   favorites: {
     yours: 'Tus favoritos',
+    success: 'Agregamos la película a tus favoritos.',
+    error: 'No pudimos agregar la pelicula a tus favoritos.',
+    removeSuccess: 'Removimos la película de tus favoritos.',
+    removeError: 'No pudimos removes la película de tus favoritos.',
+    delete: 'Eliminar de favoritos',
+    removeMessage: '¿DESEA ELIMINAR LA PELICULA DE FAVORITOS?',
   },
   logout: {
     message: '¿Desea cerrar la sesión?',
   },
   delete: {
     message: '¿Desea Eliminar la cuenta?',
-    subMessage: 'Esta acción no es reversible',
+    subMessage: 'Esta acción no es reversible.',
   },
   noConnection: {
     ups: '¡UPS!',
@@ -74,5 +80,7 @@ export default {
   },
   rating: {
     title: 'Tu calificación',
+    success: 'Guardamos tu calificación',
+    message: 'Las calificaciones se actualizan una vez por día. ',
   },
 };

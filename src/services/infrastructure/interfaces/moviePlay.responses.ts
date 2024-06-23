@@ -17,6 +17,8 @@ export interface FullMovieResult {
   movieCast: MovieCast;
   genreList: Genre[];
   imageList: ImageList;
+  userRating: number | null;
+  isUserFavorite: boolean;
   metadata: null;
 }
 

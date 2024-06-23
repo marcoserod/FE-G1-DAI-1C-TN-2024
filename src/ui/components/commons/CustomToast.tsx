@@ -149,7 +149,10 @@ const toastConfig = {
   info: props => <InfoToast {...props} />,
 };
 
-const showSuccessToast = ({title = I18n.t('commons.success'), message}) => {
+const showSuccessToast = ({
+  title = I18n.t('commons.success'),
+  message = '',
+}) => {
   Toast.show({
     type: 'success',
     visibilityTime: 10000,
@@ -159,7 +162,7 @@ const showSuccessToast = ({title = I18n.t('commons.success'), message}) => {
   });
 };
 
-const showInfoToast = ({title = I18n.t('commons.info'), message}) => {
+const showInfoToast = ({title = I18n.t('commons.info'), message = ''}) => {
   Toast.show({
     type: 'info',
     visibilityTime: 10000,
@@ -171,7 +174,7 @@ const showInfoToast = ({title = I18n.t('commons.info'), message}) => {
 
 const showErrorToast = ({
   title = I18n.t('commons.error'),
-  message,
+  message = '',
   onRetry,
 }) => {
   Toast.show({
