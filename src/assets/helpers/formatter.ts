@@ -21,7 +21,7 @@ export class Formatter {
     return result.trim();
   }
 
-  public static date(date: string | undefined): string {
+  public static date(date: Date | string | undefined): string {
     if (!date) {
       return '';
     }

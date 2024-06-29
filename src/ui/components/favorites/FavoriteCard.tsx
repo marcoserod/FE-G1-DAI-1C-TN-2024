@@ -8,14 +8,7 @@ import {useHandleFavorites} from './useHandleFavorites';
 import {LoadingModal} from '../commons/modal/LoadingModal';
 import {ConfirmModal} from '../commons/ConfirmModal';
 
-export const FavoriteCard = ({
-  title,
-  year,
-  poster,
-  id,
-  description,
-  refetch,
-}) => {
+export const FavoriteCard = ({title, year, poster, id, description}) => {
   const navigation = useNavigation();
   const {
     isConfirmVisible,
@@ -35,7 +28,6 @@ export const FavoriteCard = ({
         onConfirm={() =>
           handleRemoveFavorite({
             movieId: id,
-            onSuccessCallback: refetch,
           })
         }
       />
@@ -91,6 +83,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   remove: {
-    marginVertical: 'auto',
+    marginTop: 'auto',
   },
 });

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, FlatList, ScrollView} from 'react-native';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
 import CustomCheckbox from './Checkbox';
 
 type Option = {

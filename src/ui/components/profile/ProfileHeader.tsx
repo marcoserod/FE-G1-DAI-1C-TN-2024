@@ -9,7 +9,7 @@ import {ChangePhotoModal} from './ChangePhotoModal';
 import {User} from '../../../services/entities/user.entity';
 
 interface Props {
-  user: User;
+  user: User | undefined;
   showBack?: boolean;
   isEdit?: boolean;
 }
@@ -41,14 +41,14 @@ export const ProfileHeader = ({
           </TouchableOpacity>
         ) : null}
         <View style={styles.userName}>
-          <Text style={styles.greeting}>{`Hola ${user.name}`}</Text>
-          <Text style={styles.nickName}>{`@${user.nickname}`}</Text>
+          <Text style={styles.greeting}>{`Hola ${user?.name}`}</Text>
+          <Text style={styles.nickName}>{`@${user?.nickname}`}</Text>
         </View>
       </View>
       <View>
         <Image
           source={{
-            uri: user.profileImage || 'https://i.stack.imgur.com/l60Hf.png',
+            uri: user?.profileImage || 'https://i.stack.imgur.com/l60Hf.png',
           }}
           onError={e =>
             console.error('Error loading image:', e.nativeEvent.error)

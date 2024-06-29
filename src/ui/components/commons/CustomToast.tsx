@@ -15,7 +15,7 @@ const CloseIcon = () => {
   );
 };
 
-const Actions = ({onRetry}) => {
+const Actions = ({onRetry}: {onRetry: () => void}) => {
   return (
     <View style={styles.actions}>
       {onRetry ? (
@@ -153,16 +153,19 @@ const showSuccessToast = ({
   title = I18n.t('commons.success'),
   message = '',
 }) => {
+  Toast.hide();
   Toast.show({
     type: 'success',
     visibilityTime: 10000,
     autoHide: true,
     text1: title,
     text2: message,
+    onHide: () => console.log('hide'),
   });
 };
 
 const showInfoToast = ({title = I18n.t('commons.info'), message = ''}) => {
+  Toast.hide();
   Toast.show({
     type: 'info',
     visibilityTime: 10000,
@@ -175,8 +178,9 @@ const showInfoToast = ({title = I18n.t('commons.info'), message = ''}) => {
 const showErrorToast = ({
   title = I18n.t('commons.error'),
   message = '',
-  onRetry,
+  onRetry = undefined,
 }) => {
+  Toast.hide();
   Toast.show({
     type: 'error',
     autoHide: false,

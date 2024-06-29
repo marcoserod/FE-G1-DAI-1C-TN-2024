@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {Button} from '../commons/Button';
 import I18n from '../../../assets/localization/i18n';
@@ -42,7 +36,6 @@ export const ProfileContent = () => {
     } catch (error) {
       showErrorToast({
         message: I18n.t('profile.logoutError'),
-        onRetry: handleLogout,
       });
     }
   };
@@ -55,7 +48,6 @@ export const ProfileContent = () => {
     } catch (error) {
       showErrorToast({
         message: I18n.t('profile.deleteError'),
-        onRetry: handleLogout,
       });
     }
   };

@@ -17,7 +17,7 @@ import {useGetFavoritesQuery} from '../../../services/user';
 import {useSelector} from 'react-redux';
 import {FavoriteCard} from '../../components/favorites/FavoriteCard';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
-import {ProgressBar} from '@react-native-community/progress-bar-android';
+import {BackToTop, useBackToTop} from '../../components/commons/BackToTop';
 
 export const FavoritesScreen = () => {
   const navigation = useNavigation();
@@ -26,6 +26,7 @@ export const FavoritesScreen = () => {
   const {data, isLoading, isFetching} = useGetFavoritesQuery({userId, page});
   const totalRecords = data?.totalRecords;
   const favorites = data?.movies;
+  const {handleBackToTop, handleScroll, showButton, moviesRef} = useBackToTop();
 
   const loadMore = () => {
     if (!isFetching && favorites && favorites.length < totalRecords) {
@@ -51,49 +52,41 @@ export const FavoritesScreen = () => {
           <Text style={styles.textHeader}>{I18n.t('favorites.yours')}</Text>
         </View>
       </LinearGradient>
-      {isFetching && !isLoading ? (
-        <ProgressBar
-          styleAttr="Horizontal"
-          color={COLORS.PRIMARY}
-          style={{marginTop: -10}}
-        />
-      ) : null}
       {favorites?.length ? (
-        <FlatList
-          data={favorites}
-          keyExtractor={item => item.id.toString()}
-          horizontal={false}
-          contentContainerStyle={styles.gridContainer}
-          onEndReached={loadMore}
-          /*  ListHeaderComponent={
-            !isFetching ? (
-              <ProgressBar styleAttr="Horizontal" color={COLORS.PRIMARY_2} />
-            ) : null
-          } */
-          ListFooterComponent={
-            !isLoading && isFetching ? (
-              <ActivityIndicator size="large" color={COLORS.PRIMARY} />
-            ) : null
-          }
-          onEndReachedThreshold={0.8}
-          renderItem={({item}) => (
-            <FavoriteCard
-              refetch={() => {}}
-              title={item.title}
-              id={item.id}
-              year={item.year}
-              poster={item.poster}
-              description={item.description}
-            />
-          )}
-        />
+        <>
+          <FlatList
+            ref={moviesRef}
+            onScroll={handleScroll}
+            data={favorites}
+            keyExtractor={item => item.id.toString()}
+            horizontal={false}
+            contentContainerStyle={styles.gridContainer}
+            onEndReached={loadMore}
+            ListFooterComponent={
+              !isLoading && isFetching && favorites?.length < totalRecords ? (
+                <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+              ) : null
+            }
+            onEndReachedThreshold={0.8}
+            renderItem={({item}) => (
+              <FavoriteCard
+                title={item.title}
+                id={item.id}
+                year={item.year}
+                poster={item.poster}
+                description={item.description}
+              />
+            )}
+          />
+          {showButton ? <BackToTop onPress={handleBackToTop} /> : null}
+        </>
       ) : (
         !isLoading &&
         !isFetching && (
           <View style={styles.card}>
             <Text style={styles.emptyText}>
-              Aun no tienes peliculas agregadas en tus favoritos, empieza
-              buscando alguna
+              Aún no tienes películas agregadas en tus favoritos, empieza
+              buscando alguna.
             </Text>
             <View>
               <Button

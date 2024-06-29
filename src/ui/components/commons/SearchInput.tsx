@@ -1,12 +1,4 @@
-import {
-  TextInput,
-  StyleSheet,
-  NativeSyntheticEvent,
-  TextInputSubmitEditingEventData,
-  View,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import {TextInput, StyleSheet, View, TouchableOpacity} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
 import I18n from '../../../assets/localization/i18n';
@@ -17,13 +9,13 @@ interface Props {
 }
 
 export const SearchInput = ({onSubmit}: Props) => {
-  const searchInputRef = useRef(null);
-  const [innerText, setInnerTet] = useState<string>('');
+  const searchInputRef = useRef<TextInput>(null);
+  const [innerText, setInnerText] = useState<string>('');
   const handleInputSubmit = () => {
     onSubmit(innerText);
   };
   const handleOnClear = () => {
-    setInnerTet('');
+    setInnerText('');
     searchInputRef?.current?.focus();
   };
   return (
@@ -31,7 +23,7 @@ export const SearchInput = ({onSubmit}: Props) => {
       <TextInput
         ref={searchInputRef}
         value={innerText}
-        onChangeText={text => setInnerTet(text)}
+        onChangeText={text => setInnerText(text)}
         onSubmitEditing={handleInputSubmit}
         style={styles.input}
         placeholder={I18n.t('search.searchPlaceholder')}

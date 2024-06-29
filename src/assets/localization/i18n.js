@@ -1,7 +1,7 @@
 import {I18n as i18n} from 'i18n-js';
-import * as RNLocalize from 'react-native-localize';
+/* import * as RNLocalize from 'react-native-localize'; */
 import es from './translations/es';
-const locales = RNLocalize.getLocales();
+/* const locales = RNLocalize.getLocales(); */
 //Supported lenaguages
 // There is a file naming convetion for the translation fileseach translation files has to be named in a way that
 // represents the language convetion

@@ -8,6 +8,7 @@ import {
 } from '../../../services/user';
 import {showErrorToast, showSuccessToast} from '../commons/CustomToast';
 import I18n from '../../../assets/localization/i18n';
+import {moviesApi} from '../../../services/movies';
 
 export const useHandleFavorites = () => {
   const userId = useSelector(state => state?.userSession?.userId);
@@ -19,16 +20,14 @@ export const useHandleFavorites = () => {
     useRemoveFavoriteMutation();
   const dispatch = useDispatch();
 
-  const handleAddFavorite = async ({
-    movieId,
-    onSuccessCallback,
-  }: {
-    movieId: number;
-    onSuccessCallback: () => void;
-  }) => {
+  const handleAddFavorite = async ({movieId}: {movieId: number}) => {
     try {
       await addFavorite({userId, movieId}).unwrap();
-      onSuccessCallback();
+      dispatch(
+        moviesApi.util.updateQueryData('getMovieById', {movieId}, draft => {
+          draft.isUserFavorite = true;
+        }),
+      );
       triggerFavorites({userId, page: 1});
       showSuccessToast({message: I18n.t('favorites.success')});
     } catch (error) {
@@ -36,16 +35,14 @@ export const useHandleFavorites = () => {
       showErrorToast({message: I18n.t('favorites.error')});
     }
   };
-  const handleRemoveFavorite = async ({
-    movieId,
-    onSuccessCallback,
-  }: {
-    movieId: number;
-    onSuccessCallback: () => void;
-  }) => {
+  const handleRemoveFavorite = async ({movieId}: {movieId: number}) => {
     try {
       await removeFavorite({userId, movieId}).unwrap();
-      onSuccessCallback();
+      dispatch(
+        moviesApi.util.updateQueryData('getMovieById', {movieId}, draft => {
+          draft.isUserFavorite = false;
+        }),
+      );
       dispatch(
         usersApi.util.updateQueryData('getFavorites', {userId}, draft => {
           draft.movies = draft.movies.filter(movie => movie.id !== movieId);

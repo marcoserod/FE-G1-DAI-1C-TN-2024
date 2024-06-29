@@ -1,6 +1,6 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {MovieMapper} from './infrastructure/mappers/movie.mapper';
-import {FullMovie, Movie} from './entities/movie.entity';
+import {FullMovie} from './entities/movie.entity';
 import baseQueryWithReAuth from './reAuthBaseQuery';
 import {FullMovieResult} from './infrastructure/interfaces/moviePlay.responses';
 
@@ -9,9 +9,9 @@ export const moviesApi = createApi({
   baseQuery: baseQueryWithReAuth,
   endpoints: builder => ({
     nowPlaying: builder.query({
-      query: ({page}) => ({
+      query: ({page, region}) => ({
         url: '/movies/nowPlaying',
-        params: {page},
+        params: {page, region},
       }),
       transformResponse: response => ({
         movies: response.movies?.map(MovieMapper.fromMoviePlayResultToEntity),
@@ -22,8 +22,12 @@ export const moviesApi = createApi({
       serializeQueryArgs: ({endpointName}) => {
         return endpointName;
       },
-      merge: (currentCache, newItems) => {
-        currentCache.movies.push(...newItems.movies);
+      merge: (currentCache, newItems, {arg}) => {
+        if (arg.page === 1) {
+          return newItems;
+        } else {
+          currentCache.movies.push(...newItems.movies);
+        }
       },
       forceRefetch({currentArg, previousArg}) {
         return currentArg !== previousArg;

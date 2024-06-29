@@ -75,12 +75,7 @@ const MovieDetailScreen = ({route}) => {
     refetch,
   } = useGetMovieByIdQuery({movieId});
   const [rateMovie, {isLoading: isRateLoading}] = useRateMutation();
-  const {
-    handleAddFavorite,
-    /*  handleRemoveFavorite, */
-    isAddFavoriteLoading,
-    /* isRemoveFavoriteLoading, */
-  } = useHandleFavorites();
+  const {handleAddFavorite, isAddFavoriteLoading} = useHandleFavorites();
   const navigation = useNavigation();
   const videoId = extractVideoId(movie?.trailer);
   const isFavorite = movie?.isUserFavorite;
@@ -91,9 +86,9 @@ const MovieDetailScreen = ({route}) => {
     {key: 'direction', title: I18n.t('movie.direction')},
   ];
   const mediaTabRoutes = [
-    {key: 'trailer', title: I18n.t('movie.trailer')},
-    {key: 'images', title: I18n.t('movie.images')},
-  ];
+    videoId && {key: 'trailer', title: I18n.t('movie.trailer')},
+    movie?.images.length && {key: 'images', title: I18n.t('movie.images')},
+  ].filter(Boolean);
   const {ImageGallery, openImageViewer} = useImageGallery();
   const {rating, onRating, isConfirmVisible, handleModalVisibility} =
     useRatingModal();
@@ -130,10 +125,11 @@ const MovieDetailScreen = ({route}) => {
         title: I18n.t('rating.success'),
         message: I18n.t('rating.message'),
       });
+      refetch();
       handleModalVisibility();
-    } catch (error) {
-      console.log(error);
-      showErrorToast({message: error?.data?.message});
+    } catch (rateError) {
+      console.log(rateError);
+      showErrorToast({message: rateError?.data?.message});
     }
   };
 
@@ -142,7 +138,7 @@ const MovieDetailScreen = ({route}) => {
       handleRemoveModalVisibility();
       return;
     }
-    handleAddFavorite({movieId, onSuccessCallback: refetch});
+    handleAddFavorite({movieId});
   };
 
   const Cast = () => (
@@ -179,16 +175,7 @@ const MovieDetailScreen = ({route}) => {
       showsHorizontalScrollIndicator={false}
       renderItem={({item, index}) => (
         <TouchableOpacity onPress={() => openImageViewer(index)}>
-          <Image
-            source={{uri: item}}
-            style={{
-              marginTop: 16,
-              marginRight: 10,
-              width: 100,
-              height: 150,
-              borderRadius: 10,
-            }}
-          />
+          <Image source={{uri: item}} style={styles.movieImage} />
         </TouchableOpacity>
       )}
     />
@@ -206,7 +193,6 @@ const MovieDetailScreen = ({route}) => {
     }
   }, [error, navigation]);
 
-  console.log(movie?.images);
   return (
     <View style={styles.container}>
       <View style={styles.backButton}>
@@ -231,9 +217,7 @@ const MovieDetailScreen = ({route}) => {
         message={I18n.t('favorites.removeMessage')}
         isVisible={isRemoveFavoriteVisible}
         onClose={handleRemoveModalVisibility}
-        onConfirm={() =>
-          handleRemoveFavorite({movieId, onSuccessCallback: refetch})
-        }
+        onConfirm={() => handleRemoveFavorite({movieId})}
       />
       {!isLoading ? (
         <ImageBackground
@@ -251,7 +235,9 @@ const MovieDetailScreen = ({route}) => {
           />
 
           <View style={styles.statusBarOverlay} />
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}>
             <View style={styles.dateAndDuration}>
               <Chip
                 label={Formatter.duration(movie?.duration || 0)}
@@ -315,10 +301,12 @@ const MovieDetailScreen = ({route}) => {
             </InfoTile>
 
             <InfoTabs tabRoutes={tabRoutes} renderScene={renderScene} />
-            <InfoTabs
-              tabRoutes={mediaTabRoutes}
-              renderScene={renderMediaScene}
-            />
+            {movie?.images?.length || videoId ? (
+              <InfoTabs
+                tabRoutes={mediaTabRoutes}
+                renderScene={renderMediaScene}
+              />
+            ) : null}
 
             {/*       <InfoTile title={I18n.t('movie.cast')}>
               <FlatList
@@ -429,6 +417,13 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 10,
+  },
+  movieImage: {
+    marginTop: 16,
+    marginRight: 10,
+    width: 100,
+    height: 150,
+    borderRadius: 10,
   },
 });
 

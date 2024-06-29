@@ -12,13 +12,18 @@ import IMAGES from '../../../assets/images';
 import I18n from '../../../assets/localization/i18n';
 import {useNowPlayingQuery} from '../../../services/movies';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
+import {BackToTop, useBackToTop} from '../../components/commons/BackToTop';
 
 export const HomeScreen = () => {
   const [page, setPage] = useState(1);
-  const {data, isLoading, isFetching} = useNowPlayingQuery({page});
-
+  const {data, isLoading, isFetching} = useNowPlayingQuery({
+    page,
+    region: 'US',
+  });
+  const {handleBackToTop, handleScroll, showButton, moviesRef} = useBackToTop();
+  const totalRecords = data?.totalRecords;
   const loadMore = () => {
-    if (!isFetching && data && data.movies.length < 5000) {
+    if (!isFetching && data && data.movies.length < totalRecords) {
       setPage(prev => prev + 1);
     }
   };
@@ -31,12 +36,14 @@ export const HomeScreen = () => {
       </View>
       <LoadingModal isVisible={isLoading} />
       <FlatList
+        ref={moviesRef}
         data={data?.movies}
         keyExtractor={(item, index) => index.toString()}
         numColumns={2}
         contentContainerStyle={styles.gridContainer}
         columnWrapperStyle={styles.rowContainer}
         onEndReached={loadMore}
+        onScroll={handleScroll}
         ListFooterComponent={
           !isLoading && isFetching ? (
             <ActivityIndicator size="large" color={COLORS.PRIMARY} />
@@ -52,6 +59,7 @@ export const HomeScreen = () => {
           />
         )}
       />
+      {showButton ? <BackToTop onPress={handleBackToTop} /> : null}
     </View>
   );
 };

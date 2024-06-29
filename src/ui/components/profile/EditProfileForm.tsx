@@ -24,9 +24,7 @@ export const EditProfileForm = ({user, refetch}) => {
   const handleFormSubmit = async values => {
     const payload = {userData: values};
     try {
-      console.log('Vamos a actualziar con el mismo nickname');
-      const response = await editUser({userId: id, payload}).unwrap();
-      console.log('Dio success', 'la respuesta:', response);
+      await editUser({userId: id, payload}).unwrap();
       showSuccessToast({message: I18n.t('profile.editProfileSuccess')});
       refetch();
       navigation.navigate('Profile');
@@ -56,7 +54,7 @@ export const EditProfileForm = ({user, refetch}) => {
             keyboardShouldPersistTaps="handled"
             automaticallyAdjustKeyboardInsets={true}
             contentContainerStyle={styles.containerContent}>
-            <LoadingModal isVisible={isLoading}> </LoadingModal>
+            <LoadingModal isVisible={isLoading} />
             <FormInput
               label="Nombre"
               editable

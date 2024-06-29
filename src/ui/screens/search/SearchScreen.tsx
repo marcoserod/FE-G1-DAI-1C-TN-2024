@@ -3,12 +3,11 @@ import {
   Text,
   StyleSheet,
   Image,
-  Pressable,
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {COLORS} from '../../../constants/colors';
 import IMAGES from '../../../assets/images';
 import {SearchInput} from '../../components/commons/SearchInput';
@@ -19,6 +18,7 @@ import {MovieCard} from '../../components/movies/MovieCard';
 import {LoadingModal} from '../../components/commons/modal/LoadingModal';
 import {showErrorToast} from '../../components/commons/CustomToast';
 import I18n from '../../../assets/localization/i18n';
+import {BackToTop, useBackToTop} from '../../components/commons/BackToTop';
 
 export const SearchScreen = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -34,10 +34,10 @@ export const SearchScreen = () => {
     rate: 'desc',
   });
   const [filters, setFilters] = useState([]);
-  const flatListRef = useRef(null);
-  const scrollToTop = () => {
-    flatListRef?.current?.scrollToOffset({animated: false, offset: 0});
-  };
+  const {handleBackToTop, handleScroll, showButton, moviesRef} = useBackToTop();
+  const scrollToTop = useCallback(() => {
+    moviesRef?.current?.scrollToOffset({animated: false, offset: 0});
+  }, [moviesRef]);
 
   const handleSearch = async (text: string) => {
     setSearchValue(text);
@@ -62,7 +62,7 @@ export const SearchScreen = () => {
     }
   };
 
-  const handleFilters = async () => {
+  const handleFilters = useCallback(async () => {
     setPage(1);
     scrollToTop();
     setManualLoading(true);
@@ -74,13 +74,21 @@ export const SearchScreen = () => {
       filters,
     });
     setManualLoading(false);
-  };
+  }, [
+    searchValue,
+    sorting.date,
+    sorting.rate,
+    filters,
+    scrollToTop,
+    setManualLoading,
+    triggerSearch,
+  ]);
 
   useEffect(() => {
     if (searchValue) {
       handleFilters();
     }
-  }, [searchValue, sorting, filters]);
+  }, [searchValue, sorting, filters, handleFilters]);
 
   useEffect(() => {
     if (error) {
@@ -108,7 +116,7 @@ export const SearchScreen = () => {
             ) : null}
             <TouchableOpacity
               onPress={() => setFiltersVisible(prevOpen => !prevOpen)}
-              style={{marginLeft: 'auto'}}>
+              style={styles.filterIcon}>
               <MaterialCommunityIcons
                 name="filter-outline"
                 color={filters?.length ? COLORS.PRIMARY : COLORS.TEXT}
@@ -119,31 +127,35 @@ export const SearchScreen = () => {
         )}
 
         {searchValue && data?.movies?.length > 0 ? (
-          <FlatList
-            ref={flatListRef}
-            showsVerticalScrollIndicator={false}
-            data={data?.movies}
-            keyExtractor={(item, index) => index.toString()}
-            numColumns={2}
-            contentContainerStyle={styles.gridContainer}
-            columnWrapperStyle={styles.rowContainer}
-            ListFooterComponent={
-              isFetching && !manualLoading ? (
-                <ActivityIndicator size="large" color={COLORS.PRIMARY} />
-              ) : null
-            }
-            onEndReached={loadMore}
-            onEndReachedThreshold={0.8}
-            renderItem={({item}) => (
-              <MovieCard
-                releaseDate={item.releaseDate}
-                title={item.title}
-                id={item.id}
-                poster={item.poster}
-                rating={item.rating}
-              />
-            )}
-          />
+          <>
+            <FlatList
+              ref={moviesRef}
+              onScroll={handleScroll}
+              showsVerticalScrollIndicator={false}
+              data={data?.movies}
+              keyExtractor={item => item.id.toString()}
+              numColumns={2}
+              contentContainerStyle={styles.gridContainer}
+              columnWrapperStyle={styles.rowContainer}
+              ListFooterComponent={
+                isFetching && !manualLoading ? (
+                  <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+                ) : null
+              }
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.8}
+              renderItem={({item}) => (
+                <MovieCard
+                  releaseDate={item.releaseDate}
+                  title={item.title}
+                  id={item.id}
+                  poster={item.poster}
+                  rating={item.rating}
+                />
+              )}
+            />
+            {showButton ? <BackToTop onPress={handleBackToTop} /> : null}
+          </>
         ) : (
           searchValue &&
           !isLoading &&
@@ -201,4 +213,5 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     fontSize: 16,
   },
+  filterIcon: {marginLeft: 'auto'},
 });
